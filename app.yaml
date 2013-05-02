@@ -2,13 +2,13 @@ application: badook-game
 version: 1
 runtime: python27
 api_version: 1
-threadsafe: true
-
-libraries:
-- name: jinja2
-  version: latest
+threadsafe: yes
 
 handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
 - url: /html
   static_dir: html
 
@@ -23,3 +23,10 @@ handlers:
 
 - url: /.*
   script: main.app
+
+libraries:
+- name: webapp2
+  version: latest
+
+- name: jinja2
+  version: latest
