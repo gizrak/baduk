@@ -1,0 +1,19 @@
+{
+  "name": "Web Badook",
+  "description": "Play Badook game on web browser",
+  "version": "1",
+  "app": {
+    "urls": [
+      "*://badook.gizrak.com"
+    ],
+    "launch": {
+      "web_url": "http://badook.gizrak.com"
+    }
+  },
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "permissions": [
+    "unlimitedStorage"
+  ]
+}
