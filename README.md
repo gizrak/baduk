@@ -1,6 +1,14 @@
-badook, a web based badook(go) game
+badook
+=========
 
-http://code.google.com/p/badook/
+# Introduction
+
+This game is known as Go with Japanese pronunciation and Badook is Korean pronunciation actually. Many people loves this board game.
+
+## Motivation
+
+I wanted to develop this game on web environment that makes possible to run this game on every platform via web standard technology.
+
 
 see AUTHORS file for authors
 
