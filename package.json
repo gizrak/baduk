@@ -1,7 +1,7 @@
 {
-  "name": "badook",
+  "name": "gizrak_badook",
   "version": "0.0.1",
-  "private": false,
+  "private": true,
   "scripts": {
     "start": "node web.js"
   },
