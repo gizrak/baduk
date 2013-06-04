@@ -1,9 +1,5 @@
 var LS_OPTION = 'option';
 
-var gridContext;
-var stoneContext;
-var gridtextContext;
-
 define([''], function() {
 
     BoardOption = function() {
