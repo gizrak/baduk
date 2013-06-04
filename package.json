@@ -6,7 +6,7 @@
     "start": "node web.js"
   },
   "dependencies": {
-    "express": "3.2.6",
-    "jade": "*"
+    "express": "3.0.0",
+    "ejs": "*"
   }
 }
