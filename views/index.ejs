@@ -1,156 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Badook</title>
-<link type="text/css" href="theme/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+	<meta charset="utf-8" />
+	<title>Badook</title>
+	<link type="text/css" href="theme/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+	<link type="text/css" href="/css/style.css" rel="stylesheet" />
 
-<script type="text/javascript" src="js/jquery/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="js/jquery/jquery-ui-1.8.23.custom.min.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery/jquery-ui-1.8.23.custom.min.js"></script>
+	<script type="text/javascript" src="js/board.js"></script>
+	<script type="text/javascript">
+	var board;
 
-<script type="text/javascript" src="js/board.js"></script>
+	$(document).ready(function() {
+	    var width = $(window).width();
+	    var height = $(window).height() - 20;	// 20px : for margin
+	    var min_size = (width < height) ? width : height;
+	    console.log('width: ' + width + 'px, height: ' + height + 'px, min_size: ' + min_size + 'px');
 
-<script type="text/javascript">
-var board;
-
-$(document).ready(function() {
-    var width = $(window).width();
-    var height = $(window).height() - 20;	// 20px : for margin
-    var min_size = (width < height) ? width : height;
-    console.log('width: ' + width + 'px, height: ' + height + 'px, min_size: ' + min_size + 'px');
-
-    // init board
-    board = new Board(min_size, 19);
-    board.drawBoard();
-    board.option.reload();
-});
-
-$(function() {
-	// Accordion
-	$("#accordion").accordion({
-		header : "h3"
+	    // init board
+	    board = new Board(min_size, 19);
+	    board.drawBoard();
+	    board.option.reload();
 	});
 
-	// Tabs
-	$('#tabs').tabs();
+	$(function() {
+		// Accordion
+		$("#accordion").accordion({
+			header : "h3"
+		});
 
-	// Dialog
-	$('#dialog').dialog({
-		autoOpen : false,
-		width : 600,
-		buttons : {
-			"Ok" : function() {
-				$(this).dialog("close");
-			},
-			"Cancel" : function() {
-				$(this).dialog("close");
+		// Tabs
+		$('#tabs').tabs();
+
+		// Dialog
+		$('#dialog').dialog({
+			autoOpen : false,
+			width : 600,
+			buttons : {
+				"Ok" : function() {
+					$(this).dialog("close");
+				},
+				"Cancel" : function() {
+					$(this).dialog("close");
+				}
 			}
-		}
+		});
+
+		// Dialog Link
+		$('#dialog_link').click(function() {
+			$('#dialog').dialog('open');
+			return false;
+		});
+
+		// Datepicker
+		$('#datepicker').datepicker({
+			inline : true
+		});
+
+		// Slider
+		$('#slider').slider({
+			range : true,
+			values : [ 17, 67 ]
+		});
+
+		// Progressbar
+		$("#progressbar").progressbar({
+			value : 20
+		});
+
+		//hover states on the static widgets
+		$('#dialog_link, ul#icons li').hover(function() {
+			$(this).addClass('ui-state-hover');
+		}, function() {
+			$(this).removeClass('ui-state-hover');
+		});
+
+		$('#remove_stone').click(function(event) {
+			board.removeStone();
+		});
+
+		$('#show_stone').click(function(event) {
+			$('canvas#stone').show();
+		});
+
+		$('#hide_stone').click(function(event) {
+			$('canvas#stone').hide();
+			$('canvas#gridtext').hide();
+		});
+		
+		$('#show_text').click(function(event) {
+			$('canvas#stone').show();
+			$('canvas#gridtext').show();
+		});
+
+		$('#hide_text').click(function(event) {
+			$('canvas#gridtext').hide();
+		});
+
+		$(':input:radio[name=color]').click(function(event) {
+			board.option.setColor($(this).val());
+			console.log(board.option.getColor());
+		});
 	});
-
-	// Dialog Link
-	$('#dialog_link').click(function() {
-		$('#dialog').dialog('open');
-		return false;
-	});
-
-	// Datepicker
-	$('#datepicker').datepicker({
-		inline : true
-	});
-
-	// Slider
-	$('#slider').slider({
-		range : true,
-		values : [ 17, 67 ]
-	});
-
-	// Progressbar
-	$("#progressbar").progressbar({
-		value : 20
-	});
-
-	//hover states on the static widgets
-	$('#dialog_link, ul#icons li').hover(function() {
-		$(this).addClass('ui-state-hover');
-	}, function() {
-		$(this).removeClass('ui-state-hover');
-	});
-
-	$('#remove_stone').click(function(event) {
-		board.removeStone();
-	});
-
-	$('#show_stone').click(function(event) {
-		$('canvas#stone').show();
-	});
-
-	$('#hide_stone').click(function(event) {
-		$('canvas#stone').hide();
-		$('canvas#gridtext').hide();
-	});
-	
-	$('#show_text').click(function(event) {
-		$('canvas#stone').show();
-		$('canvas#gridtext').show();
-	});
-
-	$('#hide_text').click(function(event) {
-		$('canvas#gridtext').hide();
-	});
-
-	$(':input:radio[name=color]').click(function(event) {
-		board.option.setColor($(this).val());
-		console.log(board.option.getColor());
-	});
-});
-</script>
-<style type="text/css">
-body {
-	font: 62.5% "Trebuchet MS", sans-serif;
-	padding: 20px;
-}
-
-h2 {
-	margin-top: 2em;
-}
-
-#dialog_link {
-	padding: .4em 1em .4em 20px;
-	text-decoration: none;
-	position: relative;
-}
-
-#dialog_link span.ui-icon {
-	margin: 0 5px 0 0;
-	position: absolute;
-	left: .2em;
-	top: 50%;
-	margin-top: -8px;
-}
-
-ul#icons {
-	margin: 0;
-	padding: 0;
-}
-
-ul#icons li {
-	margin: 2px;
-	position: relative;
-	padding: 4px 0;
-	cursor: pointer;
-	float: left;
-	list-style: none;
-}
-
-ul#icons span.ui-icon {
-	float: left;
-	margin: 0 4px;
-}
-</style>
+	</script>
 </head>
 <body>
-	<div style="width:52%; float:left;">
+	<div style="width:70%; float:left;">
 		<div id="drawing">
 			<canvas id="board" style="z-index:1;position:absolute;"></canvas>
 			<canvas id="stone" style="z-index:2;position:absolute;"></canvas>
@@ -158,7 +114,7 @@ ul#icons span.ui-icon {
 		</div>
 	</div>
 	
-	<div style="width:45%; display:block; float:right; vertical-align:top; ">
+	<div style="width:30%; display:block; float:right; vertical-align:top; ">
 		<div>
 			<h2>Options</h2>
 			<div>
