@@ -161,6 +161,11 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
          *
          */
         moveBack : function() {
+            if (this.stoneHistory.length < 1) {
+                console.warn('there is no stone!');
+                return;
+            }
+            
             var lastStone = this.stoneHistory[this.stoneHistory.length - 1];
             console.log('move back stone: ', lastStone);
             this.stoneHistory.pop();
