@@ -29,7 +29,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
         }
         console.log('boardSize: ' + this.boardSize);
 
-        this.stoneSize = Math.floor(min_size - (10 * 2)) / (this.boardSize + 1) - 1;
+        this.stoneSize = min_size / this.boardSize;
         this.gridSize = this.stoneSize;
         this.marginSize = this.stoneSize;
         console.log('stoneSize: ' + this.stoneSize + 'px, gridSize: ' + this.gridSize + 'px, marginSize: ' + this.marginSize + 'px');
@@ -355,7 +355,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
         
         _drawPoints : function(x, y) {
             gridContext.moveTo(this.gridSize * x, this.gridSize * y);
-            gridContext.arc(this.gridSize * x, this.gridSize * y, 5, 0, 2 * Math.PI, true);
+            gridContext.arc(this.gridSize * x, this.gridSize * y, this.gridSize / 7, 0, 2 * Math.PI, true);
             // gridContext.fillStyle = "#00f";
             gridContext.fill();
         }
