@@ -20,7 +20,7 @@
     });
 
 	// init board
-	require(['board-main'], function(Board) {
+	require(['board-draw'], function(Board) {
 		window.board = new Board(min_size, 19);
 		board.drawBoard();
 		board.option.reload();
