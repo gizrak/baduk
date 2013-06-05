@@ -1,6 +1,6 @@
 (function(window) {
-    var width = window.outerWidth - 100;
-    var height = window.outerHeight - 100;	// 20px : for margin
+    var width = window.outerWidth;
+    var height = window.outerHeight - 20;	// 20px : for margin
     var min_size = (width < height) ? width : height;
     console.log('width: ' + width + 'px, height: ' + height + 'px, min_size: ' + min_size + 'px');
 
