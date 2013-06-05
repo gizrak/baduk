@@ -38,8 +38,8 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
         this.eventHandler = new BoardEvent();
 
         this.stoneColor = 'black';
-        this.stones = [];
-        this.sequence = 1;
+        this.stoneMap = [];
+        this.stoneHistory = [];
 
         this.initBoard();
     };
@@ -52,7 +52,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
          */
         initBoard : function() {
             this.stoneColor = 'black';
-            this.stones = ( function(parent) {
+            this.stoneMap = ( function(parent) {
                 var stones = [];
                 for(var i = 0; i < parent.boardSize; i++) {
                     stones[i] = [];
@@ -62,7 +62,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
                 }
                 return stones;
             }(this));
-            this.sequence = 1;
+
             this.option.isTextVisible() ? $('canvas#gridtext').show() : $('canvas#gridtext').hide();
         },
         
@@ -151,22 +151,24 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             var success = this._drawStone(row, col, color);
             if(success == true) {
                 this.stoneColor = (this.stoneColor == 'black') ? 'white' : 'black';
+                this.stoneHistory.push({row: row, col: col});
+                console.log(this.stoneHistory);
             }
         },
         
         /**
-         * Remove stone(s)
+         * Move back stone
          *
-         * @param row
-         * @param col
          */
-        removeStone : function(row, col) {
-            if(row < 0 || col < 0 || row >= this.boardSize || col >= this.boardSize) {
-                console.warn('Wrong cell position (' + row + ', ' + col + ')');
-                return;
-            }
+        moveBack : function() {
+            var lastStone = this.stoneHistory[this.stoneHistory.length - 1];
+            console.log('move back stone: ', lastStone);
+            this.stoneHistory.pop();
+            console.log(this.stoneHistory);
             
-            this._eraseStone(0, 0);
+            this.stoneColor = (this.stoneColor === 'black') ? 'white' : 'black';
+            
+            this._eraseStone(lastStone.row, lastStone.col);
         },
         
         /**
@@ -177,7 +179,8 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
         serialize : function() {
             var b = {};
             b.size = this.boardSize;
-            b.stones = this.stones;
+            b.stoneMap = this.stoneMap;
+            b.stoneHistory = this.stoneHistory;
             b.timestamp = new Date().getTime();
             b.screenshot = canvas.toDataURL('image/jpeg', 0.1);
 
@@ -197,7 +200,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             }
 
             // check whether if occupied position or not
-            if(this.stones[ix][iy] != 0) {
+            if(this.stoneMap[ix][iy] != 0) {
                 console.warn("Stone is already occupied by other stone. (" + ix + ", " + iy + ")");
                 return false;
             } else {
@@ -205,7 +208,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             }
 
             // set sequence number on stone matrix
-            this.stones[ix][iy] = (this.sequence++);
+            this.stoneMap[ix][iy] = (this.stoneHistory.length+1);
 
             // draw stone shape and fill color
             stoneContext.beginPath();
@@ -231,7 +234,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             gridtextContext.strokeStyle = (color == 'black') ? 'white' : 'black';
             gridtextContext.font = 'italic bold ' + (this.stoneSize / 2.5) + 'px sans-serif';
             gridtextContext.textBaseline = 'bottom';
-            var seq = this.sequence - 1;
+            var seq = this.stoneHistory.length + 1;
             var adjustment = 2.2;
             if(seq < 10) {
                 adjustment = 5.5;
@@ -246,6 +249,11 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
         },
         
         _eraseStone : function(ix, iy) {
+            if(ix < 0 || iy < 0 || ix >= this.boardSize || iy >= this.boardSize) {
+                console.warn('Wrong cell position (' + ix + ', ' + iy + ')');
+                return;
+            }
+
             var putx = this.stoneSize * (iy + 1);
             var puty = this.stoneSize * (ix + 1);
             
@@ -256,7 +264,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             }
             
             // check whether if occupied position or not
-            if(this.stones[ix][iy] == 0) {
+            if(this.stoneMap[ix][iy] == 0) {
                 console.warn("Stone is not located in that position. (" + ix + ", " + iy + ")");
                 return false;
             } else {
@@ -264,7 +272,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             }
             
             // set sequence number on stone matrix
-            this.stones[ix][iy] = 0;
+            this.stoneMap[ix][iy] = 0;  // 0 means no stone
             
             // erase stone and text
             stoneContext.beginPath();

@@ -79,8 +79,8 @@ $(function() {
 		$(this).removeClass('ui-state-hover');
 	});
 
-	$('#remove_stone').click(function(event) {
-		board.removeStone();
+	$('#moveBack').click(function(event) {
+		board.moveBack();
 	});
 
 	$('#show_stone').click(function(event) {
