@@ -20,6 +20,55 @@
     	}
     });
 
+    // init events
+    (function() {
+		$("#accordion").accordion({
+			header : "h3"
+		});
+
+		// Tabs
+		$('#tabs').tabs();
+
+		$('#moveBack').click(function(event) {
+			board.moveBack();
+		});
+
+		$('#showStone').click(function(event) {
+			if (board.option.isStoneVisible()) {
+				board.option.setStoneVisiblity(false);
+				$('canvas#stone').hide();
+				$('canvas#gridtext').hide();
+				$('#showStone').text('돌 보이기');
+			} else {
+				board.option.setStoneVisiblity(true);
+				$('canvas#stone').show();
+				if (board.option.isTextVisible()) {
+					$('canvas#gridtext').show();
+				}
+				$('#showStone').text('돌 숨기기');
+			}
+			
+		});
+		
+		$('#showText').click(function(event) {
+			if (board.option.isTextVisible()) {
+				board.option.setTextVisiblity(false);
+				$('canvas#gridtext').hide();
+				$('#showText').text('순서 보이기');
+			} else {
+				board.option.setTextVisiblity(true);
+				$('canvas#stone').show();
+				$('canvas#gridtext').show();
+				$('#showText').text('순서 숨기기');
+			}
+		});
+
+		$(':input:radio[name=color]').click(function(event) {
+			board.option.setColor($(this).val());
+			console.log(board.option.getColor());
+		});
+    })();
+
 	// init board
 	require(['board-draw'], function(Board) {
 		window.board = new Board(min_size, 19);
@@ -27,95 +76,3 @@
 		board.option.reload();
 	});
 })(this);
-
-$(function() {
-	// Accordion
-	$("#accordion").accordion({
-		header : "h3"
-	});
-
-	// Tabs
-	$('#tabs').tabs();
-
-	// Dialog
-	$('#dialog').dialog({
-		autoOpen : false,
-		width : 600,
-		buttons : {
-			"Ok" : function() {
-				$(this).dialog("close");
-			},
-			"Cancel" : function() {
-				$(this).dialog("close");
-			}
-		}
-	});
-
-	// Dialog Link
-	$('#dialog_link').click(function() {
-		$('#dialog').dialog('open');
-		return false;
-	});
-
-	// Datepicker
-	$('#datepicker').datepicker({
-		inline : true
-	});
-
-	// Slider
-	$('#slider').slider({
-		range : true,
-		values : [ 17, 67 ]
-	});
-
-	// Progressbar
-	$("#progressbar").progressbar({
-		value : 20
-	});
-
-	//hover states on the static widgets
-	$('#dialog_link, ul#icons li').hover(function() {
-		$(this).addClass('ui-state-hover');
-	}, function() {
-		$(this).removeClass('ui-state-hover');
-	});
-
-	$('#moveBack').click(function(event) {
-		board.moveBack();
-	});
-
-	$('#showStone').click(function(event) {
-		if (board.option.isStoneVisible()) {
-			board.option.setStoneVisiblity(false);
-			$('canvas#stone').hide();
-			$('canvas#gridtext').hide();
-			$('#showStone').text('돌 보이기');
-		} else {
-			board.option.setStoneVisiblity(true);
-			$('canvas#stone').show();
-			if (board.option.isTextVisible()) {
-				$('canvas#gridtext').show();
-			}
-			$('#showStone').text('돌 숨기기');
-		}
-		
-	});
-	
-	$('#showText').click(function(event) {
-		if (board.option.isTextVisible()) {
-			board.option.setTextVisiblity(false);
-			$('canvas#gridtext').hide();
-			$('#showText').text('순서 보이기');
-		} else {
-			board.option.setTextVisiblity(true);
-			$('canvas#stone').show();
-			$('canvas#gridtext').show();
-			$('#showText').text('순서 숨기기');
-		}
-	});
-
-	$(':input:radio[name=color]').click(function(event) {
-		board.option.setColor($(this).val());
-		console.log(board.option.getColor());
-	});
-});
