@@ -6,10 +6,14 @@ define([''], function() {
         var option = {
             game : {
                 boardsize : 19,
-                stonenumber : 'hide'
+                stonenumber : 1
             },
             data : {},
-            color : 'auto'
+            color : 'auto',
+            visibility: {
+                stone : true,
+                text : false
+            }
         };
 
         this.save = function() {
@@ -51,6 +55,23 @@ define([''], function() {
         this.getColor = function() {
             return option.color;
         };
+
+        this.isStoneVisible = function() {
+            return option.visibility.stone;
+        };
+
+        this.setStoneVisiblity = function(visible) {
+            option.visibility.stone = visible;
+        };
+
+        this.isTextVisible = function() {
+            return option.visibility.text;
+        };
+
+        this.setTextVisiblity = function(text) {
+            option.visibility.text = text;
+        };
+
     };
 
     return BoardOption;

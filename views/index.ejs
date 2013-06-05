@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
 	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,
+    minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<title>Badook</title>
 	<link type="text/css" href="/theme/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
 	<link type="text/css" href="/css/style.css" rel="stylesheet" />
@@ -14,7 +16,7 @@
 		<h1>바둑 시뮬레이터</h1>
 	</header>
 	<section>
-		<div style="width:70%; float:left;">
+		<div>
 			<div id="drawing">
 				<canvas id="board" style="z-index:1;position:absolute;"></canvas>
 				<canvas id="stone" style="z-index:2;position:absolute;"></canvas>
@@ -22,16 +24,14 @@
 			</div>
 		</div>
 		
-		<div style="width:30%; display:block; float:right; vertical-align:top; ">
+		<div>
 			<div>
 				<h2>Options</h2>
 				<div>
 					<h3>Events</h3>
 					<button id="remove_stone">Remove Stone</button>
-					<button id="show_stone">Show Stone</button>
-					<button id="hide_stone">Hide Stone</button>
+					<button id="show_stone">Hide Stone</button>
 					<button id="show_text">Show Text</button>
-					<button id="hide_text">Hide Text</button>
 				</div>
 				<div>
 					<h3>Stone Color</h3>

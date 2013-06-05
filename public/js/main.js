@@ -1,6 +1,6 @@
 (function(window) {
-    var width = window.outerWidth;
-    var height = window.outerHeight - 20;	// 20px : for margin
+    var width = window.outerWidth - 100;
+    var height = window.outerHeight - 100;	// 20px : for margin
     var min_size = (width < height) ? width : height;
     console.log('width: ' + width + 'px, height: ' + height + 'px, min_size: ' + min_size + 'px');
 
@@ -84,21 +84,33 @@ $(function() {
 	});
 
 	$('#show_stone').click(function(event) {
-		$('canvas#stone').show();
-	});
-
-	$('#hide_stone').click(function(event) {
-		$('canvas#stone').hide();
-		$('canvas#gridtext').hide();
+		if (board.option.isStoneVisible()) {
+			board.option.setStoneVisiblity(false);
+			$('canvas#stone').hide();
+			$('canvas#gridtext').hide();
+			$('#show_stone').text('Show Stone');
+		} else {
+			board.option.setStoneVisiblity(true);
+			$('canvas#stone').show();
+			if (board.option.isTextVisible()) {
+				$('canvas#gridtext').show();
+			}
+			$('#show_stone').text('Hide Stone');
+		}
+		
 	});
 	
 	$('#show_text').click(function(event) {
-		$('canvas#stone').show();
-		$('canvas#gridtext').show();
-	});
-
-	$('#hide_text').click(function(event) {
-		$('canvas#gridtext').hide();
+		if (board.option.isTextVisible()) {
+			board.option.setTextVisiblity(false);
+			$('canvas#gridtext').hide();
+			$('#show_text').text('Show Text');
+		} else {
+			board.option.setTextVisiblity(true);
+			$('canvas#stone').show();
+			$('canvas#gridtext').show();
+			$('#show_text').text('Hide Text');
+		}
 	});
 
 	$(':input:radio[name=color]').click(function(event) {

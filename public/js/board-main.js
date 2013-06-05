@@ -63,6 +63,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
                 return stones;
             }(this));
             this.sequence = 1;
+            this.option.isTextVisible() ? $('canvas#gridtext').show() : $('canvas#gridtext').hide();
         },
         
         /**
