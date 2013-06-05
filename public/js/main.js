@@ -83,33 +83,33 @@ $(function() {
 		board.moveBack();
 	});
 
-	$('#show_stone').click(function(event) {
+	$('#showStone').click(function(event) {
 		if (board.option.isStoneVisible()) {
 			board.option.setStoneVisiblity(false);
 			$('canvas#stone').hide();
 			$('canvas#gridtext').hide();
-			$('#show_stone').text('Show Stone');
+			$('#showStone').text('돌 보이기');
 		} else {
 			board.option.setStoneVisiblity(true);
 			$('canvas#stone').show();
 			if (board.option.isTextVisible()) {
 				$('canvas#gridtext').show();
 			}
-			$('#show_stone').text('Hide Stone');
+			$('#showStone').text('돌 숨기기');
 		}
 		
 	});
 	
-	$('#show_text').click(function(event) {
+	$('#showText').click(function(event) {
 		if (board.option.isTextVisible()) {
 			board.option.setTextVisiblity(false);
 			$('canvas#gridtext').hide();
-			$('#show_text').text('Show Text');
+			$('#showText').text('순서 보이기');
 		} else {
 			board.option.setTextVisiblity(true);
 			$('canvas#stone').show();
 			$('canvas#gridtext').show();
-			$('#show_text').text('Hide Text');
+			$('#showText').text('순서 숨기기');
 		}
 	});
 
