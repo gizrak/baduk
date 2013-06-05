@@ -2,7 +2,6 @@
     var width = window.outerWidth;
     var height = window.outerHeight - 20;	// 20px : for margin
     var min_size = (width < height) ? width : height;
-    var min_size = 320;
     console.log('width: ' + width + 'px, height: ' + height + 'px, min_size: ' + min_size + 'px');
 
     // require config

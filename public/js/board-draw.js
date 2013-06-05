@@ -2,7 +2,7 @@ var gridContext;
 var stoneContext;
 var gridtextContext;
 
-define(['jquery', 'board-option', 'board-event'], function($, BoardOption, BoardEvent) {
+define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOption, BoardEvent, message) {
 
     /**
      * Board Class
@@ -29,7 +29,9 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
         }
         console.log('boardSize: ' + this.boardSize);
 
-        this.stoneSize = min_size / this.boardSize;
+        this.width = min_size;
+        this.height = min_size;
+        this.stoneSize = min_size / (this.boardSize + 1);
         this.gridSize = this.stoneSize;
         this.marginSize = this.stoneSize;
         console.log('stoneSize: ' + this.stoneSize + 'px, gridSize: ' + this.gridSize + 'px, marginSize: ' + this.marginSize + 'px');
@@ -64,15 +66,8 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             }(this));
 
             this.option.isTextVisible() ? $('canvas#gridtext').show() : $('canvas#gridtext').hide();
-        },
-        
-        /**
-         * Gets board pixel length
-         *
-         * @return
-         */
-        getBoardLength : function() {
-            return this.boardSize * (this.stoneSize + 2) + 50;
+
+            message.print('바둑 게임 시작');
         },
         
         /**
@@ -83,8 +78,8 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             
             // canvas for 'board'
             var canvas = document.getElementById('board');
-            canvas.width = gridSize + this.marginSize;
-            canvas.height = gridSize + this.marginSize;
+            canvas.width = this.width /*gridSize + this.marginSize*/;
+            canvas.height = this.height /*gridSize + this.marginSize*/;
             gridContext = canvas.getContext('2d');
             
             // canvas for 'stone'
@@ -132,7 +127,7 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             }
 
             // drawing attributes
-            $('#drawing').attr('style', 'position: relative; width: ' + board.getBoardLength() + 'px; height: ' + board.getBoardLength() + 'px');
+            $('#drawing').attr('style', 'position: relative; width: ' + board.width + 'px; height: ' + board.height + 'px');
         },
         
         /**
@@ -144,36 +139,44 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
          */
         putStone : function(row, col, color) {
             if(row < 0 || col < 0 || row >= this.boardSize || col >= this.boardSize) {
-                console.warn('Wrong cell position (' + row + ', ' + col + ')');
+                throw 'Wrong cell position (' + row + ', ' + col + ')';
+            }
+
+            try {
+                this._drawStone(row, col, color);
+            } catch(e) {
+                console.error(e);
                 return;
             }
 
-            var success = this._drawStone(row, col, color);
-            if(success == true) {
-                this.stoneColor = (this.stoneColor == 'black') ? 'white' : 'black';
-                this.stoneHistory.push({row: row, col: col});
-                console.log(this.stoneHistory);
-            }
+            this.stoneHistory.push({row: row, col: col});
+            message.print('순서 ' + this.stoneHistory.length + ', 포석 ' + this.stoneColor + ' (' + row + ', ' + col + ')');
+
+            this.stoneColor = (this.stoneColor == 'black') ? 'white' : 'black';
         },
         
         /**
          * Move back stone
          *
          */
-        moveBack : function() {
+        moveBack : function(success, error) {
             if (this.stoneHistory.length < 1) {
-                console.warn('there is no stone!');
-                return;
+                throw 'there is no stone.';
             }
             
             var lastStone = this.stoneHistory[this.stoneHistory.length - 1];
-            console.log('move back stone: ', lastStone);
             this.stoneHistory.pop();
-            console.log(this.stoneHistory);
             
             this.stoneColor = (this.stoneColor === 'black') ? 'white' : 'black';
             
-            this._eraseStone(lastStone.row, lastStone.col);
+            try {
+                this._eraseStone(lastStone.row, lastStone.col)
+            } catch(e) {
+                console.error(e);
+                return;
+            }
+
+            message.print('순서 ' + this.stoneHistory.length + ', 무르기 ' + this.stoneColor + ' (' + row + ', ' + col + ')');
         },
         
         /**
@@ -200,16 +203,14 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
 
             // check whether if valid position or not
             if(ix < 0 || iy < 0) {
-                console.error("Position is wrong. (" + ix + ', ' + iy + ', ' + this.stoneColor + ")");
-                return false;
+                throw "Position is wrong. (" + ix + ', ' + iy + ', ' + this.stoneColor + ")";
             }
 
             // check whether if occupied position or not
             if(this.stoneMap[ix][iy] != 0) {
-                console.warn("Stone is already occupied by other stone. (" + ix + ", " + iy + ")");
-                return false;
+                throw "Stone is already occupied by other stone. (" + ix + ", " + iy + ")";
             } else {
-                console.log("drawStone(" + ix + ', ' + iy + ', ' + this.stoneColor + ")");
+                console.log("drawStone (" + ix + ', ' + iy + ', ' + this.stoneColor + ")");
             }
 
             // set sequence number on stone matrix
@@ -249,31 +250,19 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
                 adjustment = 2.2;
             }
             gridtextContext.strokeText(seq, putx - (this.stoneSize / adjustment), puty + (this.stoneSize / 3.5));
-
-            return true;
         },
         
         _eraseStone : function(ix, iy) {
-            if(ix < 0 || iy < 0 || ix >= this.boardSize || iy >= this.boardSize) {
-                console.warn('Wrong cell position (' + ix + ', ' + iy + ')');
-                return;
-            }
-
             var putx = this.stoneSize * (iy + 1);
             var puty = this.stoneSize * (ix + 1);
             
-            // check whether if valid position or not
-            if(ix < 0 || iy < 0) {
-                console.error("Position is wrong. (" + ix + ', ' + iy + ', ' + this.stoneColor + ")");
-                return false;
+            if(ix < 0 || iy < 0 || ix >= this.boardSize || iy >= this.boardSize) {
+                throw 'Wrong cell position (' + ix + ', ' + iy + ')';
             }
-            
+
             // check whether if occupied position or not
             if(this.stoneMap[ix][iy] == 0) {
-                console.warn("Stone is not located in that position. (" + ix + ", " + iy + ")");
-                return false;
-            } else {
-                console.log('eraseStone(' + ix + ', ' + iy + ')');
+                throw "Stone is not located in that position. (" + ix + ", " + iy + ")";
             }
             
             // set sequence number on stone matrix
@@ -291,8 +280,8 @@ define(['jquery', 'board-option', 'board-event'], function($, BoardOption, Board
             gridtextContext.rect(putx - this.stoneSize / 2, puty - this.stoneSize / 2, this.stoneSize, this.stoneSize);
             gridtextContext.fillStyle = this.stoneColor;
             gridtextContext.fill();
-            
-            return true;
+
+            console.log('eraseStone (' + ix + ', ' + iy + ')');
         },
         
         _drawLines : function(gridSize) {
