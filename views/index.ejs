@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+	<title>Badook</title>
 	<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	<title>Badook</title>
 
-	<link href="/favicon.ico" rel="shortcut icon" />
-	<link href="/images/apple-touch-icon.png" rel="apple-touch-icon" />
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
 
 	<link type="text/css" href="/theme/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
 	<link type="text/css" href="/css/style.css" rel="stylesheet" />
 
-	<script src="/js/libs/jquery-1.8.0.min.js"></script>
-	<script src="/js/libs/jquery-ui-1.8.23.custom.min.js"></script>
-	<script src="/js/libs/require-2.1.6.min.js" data-main="/js/main"></script>
+	<script src="/js/libs/require-2.1.6.min.js" data-main="js/main"></script>
 </head>
 <body>
 	<header>
@@ -21,6 +19,10 @@
 	</header>
 	<section>
 		<div>
+			<div>
+				<button id="resize400">400</button>
+				<button id="resize800">800</button>
+			</div>
 			<div id="drawing">
 				<canvas id="board" style="z-index:1;position:absolute;"></canvas>
 				<canvas id="stone" style="z-index:2;position:absolute;"></canvas>

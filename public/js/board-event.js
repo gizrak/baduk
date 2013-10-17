@@ -60,4 +60,3 @@ define([], function() {
 
     return BoardEvent;
 });
-

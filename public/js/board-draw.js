@@ -1,37 +1,19 @@
-var gridContext;
-var stoneContext;
-var gridtextContext;
-
 define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOption, BoardEvent, message) {
 
     /**
      * Board Class
      * 
-     * @param min_size
      * @param boardSize
+     * @param gridCount
      */
-    var Board = function(min_size, boardSize) {
-        if (boardSize) {
-            this.boardSize = boardSize;
-        } else {
-            this.boardSize = 19;
-            if(min_size <= 320) {
-                this.boardSize = 8;
-            } else if(min_size <= 400) {
-                this.boardSize = 9;
-            } else if(min_size <= 480) {
-                this.boardSize = 11;
-            } else if(min_size <= 640) {
-                this.boardSize = 13;
-            } else if(min_size <= 800) {
-                this.boardSize = 15;
-            }
-        }
-        console.log('boardSize: ' + this.boardSize);
+    var Board = function(boardSize, gridCount) {
+        this.boardSize = (typeof(boardSize) !== 'undefined') ? boardSize : 800;
+        this.gridCount = (typeof(gridCount) !== 'undefined') ? gridCount : 19;
+        console.log('boardSize: ' + boardSize + ', gridCount: ' + this.gridCount);
 
-        this.width = min_size;
-        this.height = min_size;
-        this.stoneSize = min_size / (this.boardSize + 1);
+        this.width = boardSize;
+        this.height = boardSize;
+        this.stoneSize = boardSize / (this.gridCount + 1);
         this.gridSize = this.stoneSize;
         this.marginSize = this.stoneSize;
         console.log('stoneSize: ' + this.stoneSize + 'px, gridSize: ' + this.gridSize + 'px, marginSize: ' + this.marginSize + 'px');
@@ -40,10 +22,21 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
         this.eventHandler = new BoardEvent();
 
         this.stoneColor = 'black';
-        this.stoneMap = [];
+        this.stoneMap = ( function(parent) {
+            var stones = [];
+            for(var i = 0; i < parent.gridCount; i++) {
+                stones[i] = [];
+                for(var j = 0; j < parent.gridCount; j++) {
+                    stones[i][j] = 0;
+                }
+            }
+            return stones;
+        }(this));
         this.stoneHistory = [];
 
-        this.initBoard();
+        this.option.isTextVisible() ? $('canvas#gridtext').show() : $('canvas#gridtext').hide();
+
+        message.print('바둑 게임 시작');
     };
 
     Board.prototype = {
@@ -56,9 +49,9 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             this.stoneColor = 'black';
             this.stoneMap = ( function(parent) {
                 var stones = [];
-                for(var i = 0; i < parent.boardSize; i++) {
+                for(var i = 0; i < parent.gridCount; i++) {
                     stones[i] = [];
-                    for(var j = 0; j < parent.boardSize; j++) {
+                    for(var j = 0; j < parent.gridCount; j++) {
                         stones[i][j] = 0;
                     }
                 }
@@ -66,59 +59,60 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             }(this));
 
             this.option.isTextVisible() ? $('canvas#gridtext').show() : $('canvas#gridtext').hide();
+        },
 
-            message.print('바둑 게임 시작');
+        resizeBoard : function(boardSize) {
+            this.boardSize = boardSize;
+
+            this.width = boardSize;
+            this.height = boardSize;
+            this.stoneSize = boardSize / (this.gridCount + 1);
+            this.gridSize = this.stoneSize;
+            this.marginSize = this.stoneSize;
+            console.log('stoneSize: ' + this.stoneSize + 'px, gridSize: ' + this.gridSize + 'px, marginSize: ' + this.marginSize + 'px');
+
+            this.drawBoard();
+
+            for (var i=0; i<this.stoneHistory.length; i++) {
+                var stone = this.stoneHistory[i];
+                this._drawStone(stone.row, stone.col, stone.color, i+1);
+            }
         },
         
         /**
          * Draws board
          */
         drawBoard : function() {
-            var gridSize = this.boardSize * this.gridSize;
-            
             // canvas for 'board'
             var canvas = document.getElementById('board');
-            canvas.width = this.width /*gridSize + this.marginSize*/;
-            canvas.height = this.height /*gridSize + this.marginSize*/;
-            gridContext = canvas.getContext('2d');
+            canvas.width = this.width;
+            canvas.height = this.height;
+            this.gridContext = canvas.getContext('2d');
             
             // canvas for 'stone'
             var canvas2 = document.getElementById('stone');
-            canvas2.width = gridSize + this.marginSize;
-            canvas2.height = gridSize + this.marginSize;
-            stoneContext = canvas2.getContext('2d');
+            canvas2.width = this.width;
+            canvas2.height = this.height;
+            this.stoneContext = canvas2.getContext('2d');
 
             // canvas for 'text'
             var canvas3 = document.getElementById('gridtext');
-            canvas3.width = gridSize + this.marginSize;
-            canvas3.height = gridSize + this.marginSize;
-            gridtextContext = canvas3.getContext('2d');
+            canvas3.width = this.width;
+            canvas3.height = this.height;
+            this.gridtextContext = canvas3.getContext('2d');
 
             // Draw x, y lines
-            this._drawLines(gridSize);
+            this._drawLines(this.gridCount * this.gridSize);
 
             // Create new image object to use as pattern
-            this._drawPattern(gridSize, this.marginSize);
+            this._drawPattern(this.width, this.marginSize);
 
             // Draw the guideline text
             this._drawGuidelineText();
 
-            // Clear stone map
-            this.initBoard();
-
             // Draw points
-            var point = [[0, 0]];
-            if(this.boardSize == 8) {
-                point = [[3, 3], [6, 3], [3, 6], [6, 6]];
-            } else if(this.boardSize == 9) {
-                point = [[3, 3], [7, 3], [5, 5], [3, 7], [7, 7]];
-            } else if(this.boardSize == 11) {
-                point = [[3, 3], [6, 3], [9, 3], [3, 6], [6, 6], [9, 6], [3, 9], [6, 9], [9, 9]];
-            } else if(this.boardSize == 13) {
-                point = [[3, 3], [7, 3], [11, 3], [3, 7], [7, 7], [11, 7], [3, 11], [7, 11], [11, 11]];
-            } else if(this.boardSize == 15) {
-                point = [[4, 4], [8, 4], [12, 4], [4, 8], [8, 8], [12, 8], [4, 12], [8, 12], [12, 12]];
-            } else if(this.boardSize == 19) {
+            var point = [];
+            if (this.gridCount === 19) {
                 point = [[4, 4], [10, 4], [16, 4], [4, 10], [10, 10], [16, 10], [4, 16], [10, 16], [16, 16]];
             }
 
@@ -127,7 +121,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             }
 
             // drawing attributes
-            $('#drawing').attr('style', 'position: relative; width: ' + board.width + 'px; height: ' + board.height + 'px');
+            $('#drawing').attr('style', 'position: relative; width: ' + this.width + 'px; height: ' + this.height + 'px');
         },
         
         /**
@@ -138,8 +132,15 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
          * @param color
          */
         putStone : function(row, col, color) {
-            if(row < 0 || col < 0 || row >= this.boardSize || col >= this.boardSize) {
+            if(row < 0 || col < 0 || row >= this.gridCount || col >= this.gridCount) {
                 throw 'Wrong cell position (' + row + ', ' + col + ')';
+            }
+
+            // check whether if occupied position or not
+            if(this.stoneMap[row][col] !== 0) {
+                throw "Stone is already occupied by other stone. (" + row + ", " + col + ")";
+            } else {
+                console.log("drawStone (" + row + ', ' + col + ', ' + color + ")");
             }
 
             try {
@@ -149,8 +150,8 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
                 return;
             }
 
-            this.stoneHistory.push({row: row, col: col});
-            message.print('순서 ' + this.stoneHistory.length + ', 포석 ' + this.stoneColor + ' (' + row + ', ' + col + ')');
+            this.stoneHistory.push({row: row, col: col, color: color});
+            message.print('순서 ' + this.stoneHistory.length + ', 포석 ' + this.stoneColor + ' (' + row + ', ' + col + ', ' + color + ')');
 
             this.stoneColor = (this.stoneColor == 'black') ? 'white' : 'black';
         },
@@ -186,7 +187,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
          */
         serialize : function() {
             var b = {};
-            b.size = this.boardSize;
+            b.size = this.gridCount;
             b.stoneMap = this.stoneMap;
             b.stoneHistory = this.stoneHistory;
             b.timestamp = new Date().getTime();
@@ -197,7 +198,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             return json;
         },
         
-        _drawStone : function(ix, iy, color) {
+        _drawStone : function(ix, iy, color, sequence) {
             var putx = this.stoneSize * (iy + 1);
             var puty = this.stoneSize * (ix + 1);
 
@@ -206,41 +207,34 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
                 throw "Position is wrong. (" + ix + ', ' + iy + ', ' + this.stoneColor + ")";
             }
 
-            // check whether if occupied position or not
-            if(this.stoneMap[ix][iy] != 0) {
-                throw "Stone is already occupied by other stone. (" + ix + ", " + iy + ")";
-            } else {
-                console.log("drawStone (" + ix + ', ' + iy + ', ' + this.stoneColor + ")");
-            }
-
             // set sequence number on stone matrix
             this.stoneMap[ix][iy] = (this.stoneHistory.length+1);
 
             // draw stone shape and fill color
-            stoneContext.beginPath();
-            stoneContext.globalCompositeOperation = 'source-over';
-            stoneContext.arc(putx, puty, this.stoneSize / 2 - 3, 0, 2 * Math.PI, true);
-            stoneContext.fillStyle = this.stoneColor;
+            this.stoneContext.beginPath();
+            this.stoneContext.globalCompositeOperation = 'source-over';
+            this.stoneContext.arc(putx, puty, this.stoneSize / 2 - 3, 0, 2 * Math.PI, true);
+            this.stoneContext.fillStyle = this.stoneColor;
 
             // fill gradient for shining effect (not work now)
             var radius = this.stoneSize / 2;
             var rg;
             if(color === "black") {
-                rg = stoneContext.createRadialGradient(putx - (radius / 3), puty - (radius / 3), radius / 50, putx - (radius / 3), puty - (radius / 3), radius * 0.7);
+                rg = this.stoneContext.createRadialGradient(putx - (radius / 3), puty - (radius / 3), radius / 50, putx - (radius / 3), puty - (radius / 3), radius * 0.7);
             } else {
-                rg = stoneContext.createRadialGradient(putx - (radius / 3), puty - (radius / 3), radius / 50, putx - (radius / 3), puty - (radius / 3), radius * 3);
+                rg = this.stoneContext.createRadialGradient(putx - (radius / 3), puty - (radius / 3), radius / 50, putx - (radius / 3), puty - (radius / 3), radius * 3);
             }
             rg.addColorStop(0, "white");
             rg.addColorStop(1, "black");
-            stoneContext.fillStyle = rg;
-            stoneContext.fill();
+            this.stoneContext.fillStyle = rg;
+            this.stoneContext.fill();
 
             // fill sequence text
-            gridtextContext.globalCompositeOperation = 'source-over';
-            gridtextContext.strokeStyle = (color == 'black') ? 'white' : 'black';
-            gridtextContext.font = 'italic bold ' + (this.stoneSize / 2.5) + 'px sans-serif';
-            gridtextContext.textBaseline = 'bottom';
-            var seq = this.stoneHistory.length + 1;
+            this.gridtextContext.globalCompositeOperation = 'source-over';
+            this.gridtextContext.strokeStyle = (color == 'black') ? 'white' : 'black';
+            this.gridtextContext.font = 'italic bold ' + (this.stoneSize / 2.5) + 'px sans-serif';
+            this.gridtextContext.textBaseline = 'bottom';
+            var seq = (typeof(sequence) !== 'undefined') ? sequence : this.stoneHistory.length + 1;
             var adjustment = 2.2;
             if(seq < 10) {
                 adjustment = 5.5;
@@ -249,14 +243,14 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             } else {
                 adjustment = 2.2;
             }
-            gridtextContext.strokeText(seq, putx - (this.stoneSize / adjustment), puty + (this.stoneSize / 3.5));
+            this.gridtextContext.strokeText(seq, putx - (this.stoneSize / adjustment), puty + (this.stoneSize / 3.5));
         },
         
         _eraseStone : function(ix, iy) {
             var putx = this.stoneSize * (iy + 1);
             var puty = this.stoneSize * (ix + 1);
             
-            if(ix < 0 || iy < 0 || ix >= this.boardSize || iy >= this.boardSize) {
+            if(ix < 0 || iy < 0 || ix >= this.gridCount || iy >= this.gridCount) {
                 throw 'Wrong cell position (' + ix + ', ' + iy + ')';
             }
 
@@ -269,17 +263,17 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             this.stoneMap[ix][iy] = 0;  // 0 means no stone
             
             // erase stone and text
-            stoneContext.beginPath();
-            stoneContext.globalCompositeOperation = 'destination-out';
-            stoneContext.rect(putx - this.stoneSize / 2, puty - this.stoneSize / 2, this.stoneSize, this.stoneSize);
-            stoneContext.fillStyle = this.stoneColor;
-            stoneContext.fill();
+            this.stoneContext.beginPath();
+            this.stoneContext.globalCompositeOperation = 'destination-out';
+            this.stoneContext.rect(putx - this.stoneSize / 2, puty - this.stoneSize / 2, this.stoneSize, this.stoneSize);
+            this.stoneContext.fillStyle = this.stoneColor;
+            this.stoneContext.fill();
 
-            gridtextContext.beginPath();
-            gridtextContext.globalCompositeOperation = 'destination-out';
-            gridtextContext.rect(putx - this.stoneSize / 2, puty - this.stoneSize / 2, this.stoneSize, this.stoneSize);
-            gridtextContext.fillStyle = this.stoneColor;
-            gridtextContext.fill();
+            this.gridtextContext.beginPath();
+            this.gridtextContext.globalCompositeOperation = 'destination-out';
+            this.gridtextContext.rect(putx - this.stoneSize / 2, puty - this.stoneSize / 2, this.stoneSize, this.stoneSize);
+            this.gridtextContext.fillStyle = this.stoneColor;
+            this.gridtextContext.fill();
 
             console.log('eraseStone (' + ix + ', ' + iy + ')');
         },
@@ -293,63 +287,64 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             var yEnd = yStart + gridSize;
 
             // Draw the board x lines
-            gridContext.beginPath();
+            this.gridContext.beginPath();
             for(var x = xStart; x <= xEnd - this.marginSize; x += this.gridSize) {
-                gridContext.moveTo(x, yStart);
-                gridContext.lineTo(x, yEnd - this.marginSize);
+                this.gridContext.moveTo(x, yStart);
+                this.gridContext.lineTo(x, yEnd - this.marginSize);
             }
 
             // Draw the board y lines
             for(var y = yStart; y <= yEnd - this.marginSize; y += this.gridSize) {
-                gridContext.moveTo(xStart, y);
-                gridContext.lineTo(xEnd - this.marginSize, y);
+                this.gridContext.moveTo(xStart, y);
+                this.gridContext.lineTo(xEnd - this.marginSize, y);
             }
 
-            gridContext.strokeStyle = 'black';
-            gridContext.stroke();
-            gridContext.closePath();
+            this.gridContext.strokeStyle = 'black';
+            this.gridContext.stroke();
+            this.gridContext.closePath();
         },
         
         _drawPattern : function(gridSize, marginSize) {
+            var self = this;
+
             // Create new image object to use as pattern
             var img = new Image();
-            img.src = '/images/bg_wood.jpg';
+            img.src = 'images/bg_wood.jpg';
             img.onload = function() {
-                var boardBG = gridContext.createPattern(img, 'repeat');
-                gridContext.fillStyle = boardBG;
-                gridContext.globalAlpha = 0.7;
-                gridContext.globalCompositeOperation = 'destination-over';
-                gridContext.fillRect(0, 0, gridSize + marginSize * 2, gridSize + marginSize * 2);
-                gridContext.globalAlpha = 1.0;
+                var boardBG = self.gridContext.createPattern(img, 'repeat');
+                self.gridContext.fillStyle = boardBG;
+                self.gridContext.globalAlpha = 0.7;
+                self.gridContext.globalCompositeOperation = 'destination-over';
+                self.gridContext.fillRect(0, 0, gridSize + marginSize * 2, gridSize + marginSize * 2);
+                self.gridContext.globalAlpha = 1.0;
             }
         },
         
         _drawGuidelineText : function() {
             var modify = 5;
-            gridContext.font = "20px";
-            gridContext.textBaseline = "bottom";
+            this.gridContext.font = "20px";
+            this.gridContext.textBaseline = "bottom";
 
-            var gridSize = this.boardSize * this.gridSize;
+            var gridSize = this.gridCount * this.gridSize;
             var textX = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
             var textY = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'];
 
-            for(var i = 0; i < this.boardSize; i++) {
-                gridContext.fillText(textX[i], this.gridSize * (i + 1) - 5, this.marginSize / 2 + 5);
-                gridContext.fillText(textX[i], this.gridSize * (i + 1) - 5, gridSize + this.marginSize - (this.marginSize / 2) + 5);
+            for(var i = 0; i < this.gridCount; i++) {
+                this.gridContext.fillText(textX[i], this.gridSize * (i + 1) - 5, this.marginSize / 2 + 5);
+                this.gridContext.fillText(textX[i], this.gridSize * (i + 1) - 5, gridSize + this.marginSize - (this.marginSize / 2) + 5);
 
-                gridContext.fillText(textY[i], this.marginSize / 2 - 5, this.gridSize * (i + 1) + 5);
-                gridContext.fillText(textY[i], gridSize + this.marginSize - (this.marginSize / 2) - 5, this.gridSize * (i + 1) + 5);
+                this.gridContext.fillText(textY[i], this.marginSize / 2 - 5, this.gridSize * (i + 1) + 5);
+                this.gridContext.fillText(textY[i], gridSize + this.marginSize - (this.marginSize / 2) - 5, this.gridSize * (i + 1) + 5);
             }
         },
         
         _drawPoints : function(x, y) {
-            gridContext.moveTo(this.gridSize * x, this.gridSize * y);
-            gridContext.arc(this.gridSize * x, this.gridSize * y, this.gridSize / 7, 0, 2 * Math.PI, true);
-            // gridContext.fillStyle = "#00f";
-            gridContext.fill();
+            this.gridContext.moveTo(this.gridSize * x, this.gridSize * y);
+            this.gridContext.arc(this.gridSize * x, this.gridSize * y, this.gridSize / 7, 0, 2 * Math.PI, true);
+            // this.gridContext.fillStyle = "#00f";
+            this.gridContext.fill();
         }
     };
 
     return Board;
 });
-

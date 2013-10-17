@@ -1,33 +1,59 @@
 (function(window) {
-    var width = window.outerWidth;
-    var height = window.outerHeight - 20;	// 20px : for margin
-    var min_size = (width < height) ? width : height;
-    var min_size = 480;
-    console.log('width: ' + width + 'px, height: ' + height + 'px, min_size: ' + min_size + 'px');
-
-    // require config
+    // config requirejs
     require.config({
     	paths: {
-    		jquery: 'libs/jquery-1.8.0.min'
+    		'jquery': 'libs/jquery-1.8.0.min',
+    		'jquery-ui': 'libs/jquery-ui-1.8.23.custom.min'
     	},
     	shim: {
-    		jquery: {
-    			exports: '$'
-    		}
+    		'jquery-ui': {
+    			exports: '$',
+    			deps: ['jquery']
+    		},
+    		'bootstrap': ['jquery']
     	},
     	onError: function() {
     		console.error('error occured.');
     	}
     });
 
-    // init events
-    (function() {
+	// change css when orientation changed
+	document.addEventListener('orientationchange', function(e) {
+		switch(window.orientation) {
+		case -90:
+		case 90:
+			console.log('LANDSCAPE MODE');
+			break;
+
+		case 0:
+		default:
+			console.log('PORTRAIT MODE');
+			break;
+		}
+
+		var width = window.innerWidth - 20;	// 20px : for margin
+	    var min_size = (width > 800) ? 800 : width;
+	    console.log('width: ' + width + 'px, min_size: ' + min_size + 'px');
+
+		window.board.resizeBoard(min_size);
+	});
+
+	// add initial event listeners
+    require(['jquery', 'jquery-ui'], function($, BoardOption, BoardEvent) {
 		$("#accordion").accordion({
 			header : "h3"
 		});
 
 		// Tabs
 		$('#tabs').tabs();
+
+		$('#resize400').click(function(event) {
+			board.resizeBoard(400);
+		});
+
+		$('#resize800').click(function(event) {
+			board.resizeBoard(800);
+		});
 
 		$('#moveBack').click(function(event) {
 			board.moveBack();
@@ -67,11 +93,15 @@
 			board.option.setColor($(this).val());
 			console.log(board.option.getColor());
 		});
-    })();
+	});
 
 	// init board
 	require(['board-draw'], function(Board) {
-		window.board = new Board(min_size, 19);
+	    var width = window.outerWidth - 20;	// 20px : for margin
+	    var min_size = (width > 800) ? 800 : width;
+	    console.log('width: ' + width + 'px, min_size: ' + min_size + 'px');
+
+		window.board = new Board(min_size);
 		board.drawBoard();
 		board.option.reload();
 	});
