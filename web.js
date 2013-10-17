@@ -12,7 +12,6 @@ var express = require('express')
 var app = express();
 
 // all environments
-app.set('port', 8001);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(express.favicon());
@@ -31,6 +30,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+var port = process.env.PORT || 5000;
+http.createServer(app).listen(port, function(){
+  console.log('Express server listening on port ' + port);
 });
