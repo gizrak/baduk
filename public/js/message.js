@@ -1,8 +1,8 @@
-define(['jquery'], function($) {
+define([ 'jquery' ], function($) {
 
-    return {
-        print: function(msg) {
-            $('#message').text(msg);
-        }
-    }
+	return {
+		print : function(msg) {
+			$('#message').text(msg);
+		}
+	}
 });

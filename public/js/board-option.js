@@ -1,6 +1,6 @@
 var LS_OPTION = 'option';
 
-define([''], function() {
+define([], function() {
 
     BoardOption = function() {
         var option = {

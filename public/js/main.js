@@ -1,25 +1,26 @@
 (function(window) {
-    // config requirejs
-    require.config({
-    	paths: {
-    		'jquery': 'libs/jquery-1.8.0.min',
-    		'jquery-ui': 'libs/jquery-ui-1.8.23.custom.min'
-    	},
-    	shim: {
-    		'jquery-ui': {
-    			exports: '$',
-    			deps: ['jquery']
-    		},
-    		'bootstrap': ['jquery']
-    	},
-    	onError: function() {
-    		console.error('error occured.');
-    	}
-    });
+
+	// config requirejs
+	require.config({
+		paths : {
+			'jquery' : 'libs/jquery-1.8.0.min',
+			'jquery-ui' : 'libs/jquery-ui-1.8.23.custom.min'
+		},
+		shim : {
+			'jquery-ui' : {
+				exports : '$',
+				deps : [ 'jquery' ]
+			},
+			'bootstrap' : [ 'jquery' ]
+		},
+		onError : function() {
+			console.error('error occured.');
+		}
+	});
 
 	// change css when orientation changed
 	document.addEventListener('orientationchange', function(e) {
-		switch(window.orientation) {
+		switch (window.orientation) {
 		case -90:
 		case 90:
 			console.log('LANDSCAPE MODE');
@@ -31,15 +32,15 @@
 			break;
 		}
 
-		var width = window.innerWidth - 20;	// 20px : for margin
-	    var min_size = (width > 800) ? 800 : width;
-	    console.log('width: ' + width + 'px, min_size: ' + min_size + 'px');
+		var width = window.innerWidth - 20; // 20px : for margin
+		var min_size = (width > 800) ? 800 : width;
+		console.log('width: ' + width + 'px, min_size: ' + min_size + 'px');
 
 		window.board.resizeBoard(min_size);
 	});
 
 	// add initial event listeners
-    require(['jquery', 'jquery-ui'], function($, BoardOption, BoardEvent) {
+	require([ 'jquery', 'jquery-ui' ], function($, BoardOption, BoardEvent) {
 		$("#accordion").accordion({
 			header : "h3"
 		});
@@ -73,9 +74,9 @@
 				}
 				$('#showStone').text('돌 숨기기');
 			}
-			
+
 		});
-		
+
 		$('#showText').click(function(event) {
 			if (board.option.isTextVisible()) {
 				board.option.setTextVisiblity(false);
@@ -96,10 +97,10 @@
 	});
 
 	// init board
-	require(['board-draw'], function(Board) {
-	    var width = window.outerWidth - 20;	// 20px : for margin
-	    var min_size = (width > 800) ? 800 : width;
-	    console.log('width: ' + width + 'px, min_size: ' + min_size + 'px');
+	require([ 'board-draw' ], function(Board) {
+		var width = window.outerWidth - 20; // 20px : for margin
+		var min_size = (width > 800) ? 800 : width;
+		console.log('width: ' + width + 'px, min_size: ' + min_size + 'px');
 
 		window.board = new Board(min_size);
 		board.drawBoard();
