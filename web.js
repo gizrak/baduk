@@ -1,13 +1,12 @@
-
 /**
  * Module dependencies.
  */
 
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , http = require('http')
-  , path = require('path');
+var routes = require('./routes')
+var user = require('./routes/user')
+var http = require('http')
+var path = require('path');
 
 var app = express();
 
@@ -24,13 +23,13 @@ app.engine('html', require('ejs').renderFile);
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+	app.use(express.errorHandler());
 }
 
 app.get('/', routes.index);
 app.get('/users', user.list);
 
 var port = process.env.PORT || 5000;
-http.createServer(app).listen(port, function(){
-  console.log('Express server listening on port ' + port);
+http.createServer(app).listen(port, function() {
+	console.log('Express server listening on port ' + port);
 });
