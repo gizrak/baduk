@@ -309,7 +309,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
 
             // Create new image object to use as pattern
             var img = new Image();
-            img.src = 'images/bg_wood.jpg';
+            img.src = 'images/pvc_wood_pattern_sheet.jpg';
             img.onload = function() {
                 var boardBG = self.gridContext.createPattern(img, 'repeat');
                 self.gridContext.fillStyle = boardBG;
