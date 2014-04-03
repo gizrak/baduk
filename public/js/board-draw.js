@@ -36,7 +36,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
 
         this.option.isTextVisible() ? $('canvas#gridtext').show() : $('canvas#gridtext').hide();
 
-        message.print('바둑 게임 시작');
+        message.print('Start game.');
     };
 
     Board.prototype = {
@@ -151,7 +151,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             }
 
             this.stoneHistory.push({row: row, col: col, color: color});
-            message.print('순서 ' + this.stoneHistory.length + ', 포석 ' + this.stoneColor + ' (' + row + ', ' + col + ', ' + color + ')');
+            message.print('Seq. ' + this.stoneHistory.length + ', Placement ' + this.stoneColor + ' (' + row + ', ' + col + ', ' + color + ')');
 
             this.stoneColor = (this.stoneColor == 'black') ? 'white' : 'black';
         },
@@ -177,7 +177,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
                 return;
             }
 
-            message.print('순서 ' + this.stoneHistory.length + ', 무르기 ' + this.stoneColor + ' (' + row + ', ' + col + ')');
+            message.print('Seq. ' + this.stoneHistory.length + ', Retract ' + this.stoneColor + ' (' + row + ', ' + col + ')');
         },
         
         /**

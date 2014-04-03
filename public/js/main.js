@@ -41,20 +41,9 @@
 
 	// add initial event listeners
 	require([ 'jquery', 'jquery-ui' ], function($, BoardOption, BoardEvent) {
-		$("#accordion").accordion({
-			header : "h3"
-		});
-
-		// Tabs
-		$('#tabs').tabs();
-
-		$('#resize400').click(function(event) {
-			board.resizeBoard(400);
-		});
-
-		$('#resize800').click(function(event) {
-			board.resizeBoard(800);
-		});
+		$('#resize400').click(function(event) { board.resizeBoard(400); });
+		$('#resize600').click(function(event) { board.resizeBoard(600); });
+		$('#resize800').click(function(event) { board.resizeBoard(800); });
 
 		$('#moveBack').click(function(event) {
 			board.moveBack();
@@ -65,14 +54,14 @@
 				board.option.setStoneVisiblity(false);
 				$('canvas#stone').hide();
 				$('canvas#gridtext').hide();
-				$('#showStone').text('돌 보이기');
+				$('#showStone').text('Show stones');
 			} else {
 				board.option.setStoneVisiblity(true);
 				$('canvas#stone').show();
 				if (board.option.isTextVisible()) {
 					$('canvas#gridtext').show();
 				}
-				$('#showStone').text('돌 숨기기');
+				$('#showStone').text('Hide stones');
 			}
 
 		});
@@ -81,12 +70,12 @@
 			if (board.option.isTextVisible()) {
 				board.option.setTextVisiblity(false);
 				$('canvas#gridtext').hide();
-				$('#showText').text('순서 보이기');
+				$('#showText').text('Show seq.');
 			} else {
 				board.option.setTextVisiblity(true);
 				$('canvas#stone').show();
 				$('canvas#gridtext').show();
-				$('#showText').text('순서 숨기기');
+				$('#showText').text('Hide seq.');
 			}
 		});
 
