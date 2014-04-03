@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-	<title>Badook</title>
+	<title>Badook Board(Goban) Game</title>
 	<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -15,12 +15,13 @@
 </head>
 <body>
 	<header>
-		<h1>바둑 시뮬레이터</h1>
+		<h1>Badook Board(Goban) Game</h1>
 	</header>
 	<section>
 		<div>
 			<div>
 				<button id="resize400">400</button>
+				<button id="resize600">600</button>
 				<button id="resize800">800</button>
 			</div>
 			<div id="drawing">
@@ -32,91 +33,25 @@
 		</div>
 		
 		<div>
+			<h2>Options</h2>
 			<div>
-				<h2>Options</h2>
-				<div>
-					<h3>Events</h3>
-					<button id="moveBack">무르기</button>
-					<button id="showStone">돌 숨기기</button>
-					<button id="showText">순서 보이기</button>
-				</div>
-				<div>
-					<h3>Stone Color</h3>
-					<input type="radio" id="radio_auto" name="color" value="auto" checked /><label for="radio_auto">Auto</label>
-					<input type="radio" id="radio_black" name="color" value="black" /><label for="radio_black">Black</label>
-					<input type="radio" id="radio_white" name="color" value="white" /><label for="radio_white">White</label>
-					<input type="radio" id="radio_mouse" name="color" value="mouse" /><label for="radio_mouse">Mouse</label>
-				</div>
+				<h3>Events</h3>
+				<button id="moveBack">Move back</button>
+				<button id="showStone">Hide stones</button>
+				<button id="showText">Show text</button>
 			</div>
-		
-			<h2>Accordion</h2>
-			<div id="accordion">
-				<div>
-					<h3>
-						<a href="#">First</a>
-					</h3>
-					<div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
-						Lorem ipsum dolor sit amet.</div>
-				</div>
-				<div>
-					<h3>
-						<a href="#">Second</a>
-					</h3>
-					<div>Phasellus mattis tincidunt nibh.</div>
-				</div>
-				<div>
-					<h3>
-						<a href="#">Third</a>
-					</h3>
-					<div>Nam dui erat, auctor a, dignissim quis.</div>
-				</div>
-			</div>
-			
-			<h2>Tabs</h2>
-			<div id="tabs">
-				<ul>
-					<li><a href="#tabs-1">First</a></li>
-					<li><a href="#tabs-2">Second</a></li>
-					<li><a href="#tabs-3">Third</a></li>
-				</ul>
-				<div id="tabs-1">Lorem ipsum dolor sit amet, consectetur
-					adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-					dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-					exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
-				<div id="tabs-2">Phasellus mattis tincidunt nibh. Cras orci
-					urna, blandit id, pretium vel, aliquet ornare, felis. Maecenas
-					scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.</div>
-				<div id="tabs-3">Nam dui erat, auctor a, dignissim quis,
-					sollicitudin eu, felis. Pellentesque nisi urna, interdum eget,
-					sagittis et, consequat vestibulum, lacus. Mauris porttitor
-					ullamcorper augue.</div>
-			</div>
-		
-			<h2>Highlight / Error</h2>
-			<div class="ui-widget">
-				<div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">
-					<p>
-						<span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span> <strong>Hey!</strong> Sample ui-state-highlight style.
-					</p>
-				</div>
-				<br />
-				<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
-					<p>
-						<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> <strong>Alert:</strong> Sample ui-state-error style.
-					</p>
-				</div>
+			<div>
+				<h3>Stone Color</h3>
+				<input type="radio" id="radio_auto" name="color" value="auto" checked /><label for="radio_auto">Auto</label>
+				<input type="radio" id="radio_black" name="color" value="black" /><label for="radio_black">Black</label>
+				<input type="radio" id="radio_white" name="color" value="white" /><label for="radio_white">White</label>
+				<input type="radio" id="radio_mouse" name="color" value="mouse" /><label for="radio_mouse">Mouse</label>
 			</div>
 		</div>
 	</section>
 	<footer>
 		<hr/>
-		Copyright 2013, gizrak
-		<nav>
-			<ul>
-				<li>Contact</li>
-				<li>Sitemap</li>
-			</ul>
-		</nav>
+		<p>Copyright 2013, gizrak</p>
 	</footer>
 </body>
 </html>
