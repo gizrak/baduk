@@ -40,7 +40,7 @@
 	});
 
 	// add initial event listeners
-	require([ 'jquery', 'jquery-ui' ], function($, BoardOption, BoardEvent) {
+	require([ 'jquery' ], function($) {
 		$('#resize400').click(function(event) { board.resizeBoard(400); });
 		$('#resize600').click(function(event) { board.resizeBoard(600); });
 		$('#resize800').click(function(event) { board.resizeBoard(800); });
