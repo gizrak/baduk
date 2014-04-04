@@ -1,4 +1,4 @@
-define([], function() {
+define([ 'jquery' ], function($) {
 
 	/**
 	 * Board Event Class
@@ -25,10 +25,6 @@ define([], function() {
 			if (board.option.getColor() === 'mouse') {
 				handleEvent(e, 'black');
 			}
-		});
-
-		$(window).resize(function() {
-			console.log($(window).width(), $(window).height());
 		});
 
 		function handleEvent(e, color) {
