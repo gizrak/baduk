@@ -4,5 +4,5 @@ define([ 'jquery' ], function($) {
 		print : function(msg) {
 			$('#message').text(msg);
 		}
-	}
+	};
 });

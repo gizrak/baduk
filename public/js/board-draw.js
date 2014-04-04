@@ -171,7 +171,7 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
             this.stoneColor = (this.stoneColor === 'black') ? 'white' : 'black';
             
             try {
-                this._eraseStone(lastStone.row, lastStone.col)
+                this._eraseStone(lastStone.row, lastStone.col);
             } catch(e) {
                 console.error(e);
                 return;
@@ -317,11 +317,10 @@ define(['jquery', 'board-option', 'board-event', 'message'], function($, BoardOp
                 self.gridContext.globalCompositeOperation = 'destination-over';
                 self.gridContext.fillRect(0, 0, gridSize + marginSize * 2, gridSize + marginSize * 2);
                 self.gridContext.globalAlpha = 1.0;
-            }
+            };
         },
         
         _drawGuidelineText : function() {
-            var modify = 5;
             this.gridContext.font = "20px";
             this.gridContext.textBaseline = "bottom";
 
