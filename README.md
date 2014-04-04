@@ -1,11 +1,11 @@
-badook
+baduk
 =========
 
 ### Introduction
 
-This game is known as Go Board as Japanese pronunciation. Badook is Korean pronunciation. This is popular on Asia countries.
+This game is known as Go as Japanese pronunciation. Baduk is Korean pronunciation. This is popular on Asia countries.
 
-> [http://badook.gizrak.com](http://badook.gizrak.com)
+> [http://baduk.gizrak.com](http://baduk.gizrak.com)
 
 ### Motivation
 
