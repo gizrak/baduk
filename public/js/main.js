@@ -87,7 +87,7 @@
 
 	// init board
 	require([ 'board-draw' ], function(Board) {
-		var width = window.outerWidth - 20; // 20px : for margin
+		var width = window.innerWidth - 20; // 20px : for margin
 		var min_size = (width > 800) ? 800 : width;
 		console.log('width: ' + width + 'px, min_size: ' + min_size + 'px');
 
