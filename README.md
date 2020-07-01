@@ -5,7 +5,7 @@ baduk
 
 This game is known as Go as Japanese pronunciation. Baduk is Korean pronunciation. This is popular on Asia countries.
 
-> [http://baduk.gizrak.com](http://baduk.gizrak.com)
+> <https://gizrak-badook.herokuapp.com/>
 
 ### Motivation
 
