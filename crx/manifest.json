@@ -1,13 +1,13 @@
 {
-  "name": "Web Badook",
-  "description": "Play Badook game on web browser",
+  "name": "Web baduk",
+  "description": "Play baduk game on web browser",
   "version": "1",
   "app": {
     "urls": [
-      "*://badook.gizrak.com"
+      "*://gizrak-baduk.herokuapp.com"
     ],
     "launch": {
-      "web_url": "http://badook.gizrak.com"
+      "web_url": "http://gizrak-baduk.herokuapp.com"
     }
   },
   "icons": {

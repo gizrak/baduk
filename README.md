@@ -17,7 +17,7 @@ see AUTHORS file for authors
 
 -----
 
-badook contains code from these projects:
+Baduk contains code from these projects:
 
 jQuery JavaScript Library v1.8.0
 http://jquery.com/

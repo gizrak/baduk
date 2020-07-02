@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Badook</title>
+<title>Baduk</title>
 <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
 <meta name="viewport" content="width=device-width, height=device-height" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -59,7 +59,7 @@ $(function() {
 
     $('#home_page a#new').click(function() {
     	if (board.sequence === 1) {
-    		$.mobile.changePage('#badook_page');
+    		$.mobile.changePage('#baduk_page');
     		return;
     	}
 
@@ -70,7 +70,7 @@ $(function() {
             'buttons' : {
                 'OK' : {
                     click : function() {
-                    	$.mobile.changePage('#badook_page');
+                    	$.mobile.changePage('#baduk_page');
                         board.draw();
                     }
                 },
@@ -84,7 +84,7 @@ $(function() {
         });
     });
 
-	$('#badook_page').live('pageshow', function(event) {
+	$('#baduk_page').live('pageshow', function(event) {
 		board.option.reload();
 
 		// display stone number or not
@@ -95,7 +95,7 @@ $(function() {
 		}
 	});
 
-    $('#badook_page a#save').click(function() {
+    $('#baduk_page a#save').click(function() {
         $(this).simpledialog({
             'mode' : 'bool',
             'prompt' : 'Save this game?',
@@ -125,7 +125,7 @@ $(function() {
         });
     });
 
-    $('#badook_page a#load').click(function() {
+    $('#baduk_page a#load').click(function() {
     	// TODO - user iscroll on raw html
         var li = ['<ul data-role="listview" data-theme="f">'];
         try {
@@ -263,22 +263,22 @@ $(function() {
 <body>
 	<div id="home_page" data-role="page">
 		<div data-role="header" data-position="fixed">
-			<h1>Badook Game</h1>
+			<h1>Baduk Game</h1>
 		</div>
 		<div data-role="content">
-			<img src="/images/badook.jpg" alt="Badook" class="logo_image">
+			<img src="/images/baduk.jpg" alt="Baduk" class="logo_image">
 			<a id="new" href="#" data-role="button" data-theme="b">New Game</a>
-			<a id="resume" href="#badook_page" data-role="button">Resume</a>
+			<a id="resume" href="#baduk_page" data-role="button">Resume</a>
 			<a href="#" data-role="button">Load</a>
 			<a href="#" data-role="button">Credit</a>
 			<a href="#about_page" data-role="button" data-rel="dialog">About</a>
 		</div>
 	</div>
 
-	<div id="badook_page" data-role="page">
+	<div id="baduk_page" data-role="page">
 		<div data-role="header" data-position="fixed">
 			<a id="back" href="#" data-rel="back" data-icon="home">Home</a>
-			<h1>Badook</h1>
+			<h1>Baduk</h1>
 			<a href="#option_page" data-icon="gear">Options</a>
 		</div>
 		<!-- /header -->
@@ -330,11 +330,11 @@ $(function() {
 		</div>
 		<div data-role="content" data-theme="c">
 			<p>
-				This is a web based <strong>Badook</strong> application. <strong>Badook</strong>
+				This is a web based <strong>Baduk</strong> application. <strong>Baduk</strong>
 				is Korean traditional board game and also called <strong>Go</strong>
 				game. You can store save data on cloud server.
 			</p>
-			<a href="http://code.google.com/p/badook/" target="_blank"
+			<a href="http://code.google.com/p/baduk/" target="_blank"
 				data-role="button" data-theme="b">Go to project page</a> <a href="#"
 				data-role="button" data-rel="back" data-theme="c">Cancel</a>
 		</div>
