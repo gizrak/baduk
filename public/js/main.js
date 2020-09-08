@@ -3,8 +3,8 @@
 	// config requirejs
 	require.config({
 		paths : {
-			'jquery' : 'libs/jquery-1.8.0.min',
-			'jquery-ui' : 'libs/jquery-ui-1.8.23.custom.min'
+			'jquery' : ['//code.jquery.com/jquery-1.12.4.min'],
+			'jquery-ui' : ['//code.jquery.com/ui/1.12.1/jquery-ui.min']
 		},
 		shim : {
 			'jquery-ui' : {
@@ -14,7 +14,7 @@
 			'bootstrap' : [ 'jquery' ]
 		},
 		onError : function() {
-			console.error('error occured.');
+			console.error('error occurred.');
 		}
 	});
 
