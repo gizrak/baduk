@@ -1,4 +1,31 @@
 .DS_Store
 .project
+
+# Node JS
 npm-debug.log
 node_modules
+
+# IntelliJ
+.idea
+*.iml
+
+# Cache
+.cache
+
+# Optional npm cache directory
+.npm
+
+# Option eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+
+# VS Code settings
+.vscode
+
+# App configuration files
+config.js
+
+# App distributables
+dist
