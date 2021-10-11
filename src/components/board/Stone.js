@@ -32,17 +32,39 @@ const Stone = ({ tableSize, gridCount }) => {
     canvas.width = tableSize;
     canvas.height = tableSize;
 
-    const context = canvas.getContext('2d');
-    putStone(context, 1, 1, 'white');
-    try {
-      putStone(context, 1, 1, 'black');  // conflict
-    } catch(e) {
-      console.error(e);
-    }
-    putStone(context, 3, 1, 'black');
+    canvas.addEventListener('mousedown', handle);
   }, []);
 
-  const putStone = (context, row, col, color) => {
+  const handle = (event) => {
+    // get initial coord of canvas
+      var x = event.offsetX;
+      var y = event.offsetY;
+
+      // set (0, 0) as outter guilde line +1 stone
+      // this will be virtual outter line
+      x -= (gridSize / 2);
+      y -= (gridSize / 2);
+
+      var row = Math.floor(y / gridSize);
+      var col = Math.floor(x / gridSize);
+
+      // var stoneColor;
+      // var optionColor = board.option.getColor();
+      // if (color) {
+      //   stoneColor = color;
+      // } else if (typeof optionColor === 'undefined' || optionColor === '' || optionColor === 'auto') {
+      //   stoneColor = board.stoneColor;
+      // } else {
+      //   stoneColor = optionColor;
+      // }
+
+      putStone(row, col, stoneColor);
+  }
+
+  const putStone = (row, col, color) => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+
     if (row < 0 || col < 0 || row >= gridCount || col >= gridCount) {
         throw 'Wrong cell position (' + row + ', ' + col + ')';
     }
@@ -50,8 +72,6 @@ const Stone = ({ tableSize, gridCount }) => {
     // check whether if occupied position or not
     if (stoneMap[row][col] !== 0) {
         throw "Stone is already occupied by other stone. (" + row + ", " + col + ")";
-    } else {
-        console.log("drawStone (" + row + ', ' + col + ', ' + color + ")");
     }
 
     try {
