@@ -14,7 +14,6 @@ const Stone = ({ tableSize, gridCount }) => {
   const marginSize = stoneSize;
   console.log('stoneSize: ' + stoneSize + 'px, gridSize: ' + gridSize + 'px, marginSize: ' + marginSize + 'px');
 
-  var stoneColor = 'black';
   var stoneMap = ( function(parent) {
       var stones = [];
       for(var i = 0; i < gridCount; i++) {
@@ -32,10 +31,20 @@ const Stone = ({ tableSize, gridCount }) => {
     canvas.width = tableSize;
     canvas.height = tableSize;
 
-    canvas.addEventListener('mousedown', handle);
+    canvas.addEventListener('click', white);
+    canvas.addEventListener('contextmenu', black);
   }, []);
+  
+  const white = (event) => {
+    handle(event, 'white');
+  }
+  
+  const black = (event) => {
+    event.preventDefault();
+    handle(event, 'black');
+  }
 
-  const handle = (event) => {
+  const handle = (event, color) => {
     // get initial coord of canvas
       var x = event.offsetX;
       var y = event.offsetY;
@@ -48,17 +57,7 @@ const Stone = ({ tableSize, gridCount }) => {
       var row = Math.floor(y / gridSize);
       var col = Math.floor(x / gridSize);
 
-      // var stoneColor;
-      // var optionColor = board.option.getColor();
-      // if (color) {
-      //   stoneColor = color;
-      // } else if (typeof optionColor === 'undefined' || optionColor === '' || optionColor === 'auto') {
-      //   stoneColor = board.stoneColor;
-      // } else {
-      //   stoneColor = optionColor;
-      // }
-
-      putStone(row, col, stoneColor);
+      putStone(row, col, color);
   }
 
   const putStone = (row, col, color) => {
@@ -83,8 +82,6 @@ const Stone = ({ tableSize, gridCount }) => {
 
     stoneHistory.push({row: row, col: col, color: color});
     console.log('#' + stoneHistory.length + ' Put ' + color + ' (' + row + ', ' + col + ')');
-
-    stoneColor = (stoneColor == 'black') ? 'white' : 'black';
   }
 
   const drawStone = (context, ix, iy, color, sequence) => {
@@ -93,7 +90,7 @@ const Stone = ({ tableSize, gridCount }) => {
 
     // check whether if valid position or not
     if(ix < 0 || iy < 0) {
-        throw "Position is wrong. (" + ix + ', ' + iy + ', ' + stoneColor + ")";
+        throw "Position is wrong. (" + ix + ', ' + iy + ")";
     }
 
     // set sequence number on stone matrix
