@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import Stone from './board/Stone';
 import Table from './board/Table';
 
 const Board = () => {
@@ -17,6 +18,7 @@ const Board = () => {
   return (
     <div ref={drawingRef}>
       <Table size={tableSize} grid={gridCount} />
+      <Stone tableSize={tableSize} gridCount={gridCount} />
     </div>
   );
 };
