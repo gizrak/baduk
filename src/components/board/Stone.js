@@ -14,6 +14,7 @@ const Stone = ({ tableSize, gridCount }) => {
   const marginSize = stoneSize;
   console.log('stoneSize: ' + stoneSize + 'px, gridSize: ' + gridSize + 'px, marginSize: ' + marginSize + 'px');
 
+  var stoneColor = 'black';
   var stoneMap = ( function(parent) {
       var stones = [];
       for(var i = 0; i < gridCount; i++) {
@@ -31,19 +32,15 @@ const Stone = ({ tableSize, gridCount }) => {
     canvas.width = tableSize;
     canvas.height = tableSize;
 
-    canvas.addEventListener('click', white);
-    canvas.addEventListener('contextmenu', black);
+    canvas.addEventListener('click', (event) => {
+      handle(event, stoneColor);
+    });
+    canvas.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      handle(event, 'black');
+    });
   }, []);
   
-  const white = (event) => {
-    handle(event, 'white');
-  }
-  
-  const black = (event) => {
-    event.preventDefault();
-    handle(event, 'black');
-  }
-
   const handle = (event, color) => {
     // get initial coord of canvas
       var x = event.offsetX;
@@ -82,6 +79,8 @@ const Stone = ({ tableSize, gridCount }) => {
 
     stoneHistory.push({row: row, col: col, color: color});
     console.log('#' + stoneHistory.length + ' Put ' + color + ' (' + row + ', ' + col + ')');
+
+    stoneColor = (color === 'black') ? 'white' : 'black';
   }
 
   const drawStone = (context, ix, iy, color, sequence) => {
