@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import Option from './board/Option';
 import Stone from './board/Stone';
 import Table from './board/Table';
 
@@ -16,10 +17,13 @@ const Board = () => {
   }, []);
 
   return (
-    <div ref={drawingRef}>
-      <Table size={tableSize} grid={gridCount} />
-      <Stone tableSize={tableSize} gridCount={gridCount} />
-    </div>
+    <React.Fragment>
+      <div ref={drawingRef}>
+        <Table size={tableSize} grid={gridCount} />
+        <Stone tableSize={tableSize} gridCount={gridCount} />
+      </div>
+      <Option />
+    </React.Fragment>
   );
 };
 
