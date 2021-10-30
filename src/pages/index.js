@@ -6,16 +6,16 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Layout from '../components/Layout';
 
 // import our routes
-import Home from './home';
-import Gibo from './gibo';
+import BoardPage from './board';
+import GiboPage from './gibo';
 
 // define our routes
 const Pages = props => {
   return (
     <Router>
       <Layout>
-        <Route exact path="/" component={Home} />
-        <Route path="/gibo" component={Gibo} />
+        <Route exact path="/" component={BoardPage} />
+        <Route path="/gibo" component={GiboPage} />
       </Layout>
     </Router>
   );

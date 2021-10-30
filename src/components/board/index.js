@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import Option from './board/Option';
-import Stone from './board/Stone';
-import Table from './board/Table';
+import Option from './Option';
+import Stone from './Stone';
+import Table from './Table';
 
 const Board = () => {
   const drawingRef = useRef(null);
