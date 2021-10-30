@@ -4,7 +4,7 @@ import Board from '../components/board';
 const BoardPage = () => {
   return (
     <React.Fragment>
-      <App />
+      <Board />
     </React.Fragment>
   );
 };
