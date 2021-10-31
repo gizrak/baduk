@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createRef, useEffect, useRef, useState } from 'react';
 import Option from './Option';
 import Stone from './Stone';
 import Table from './Table';
 
 const Board = () => {
   const drawingRef = useRef(null);
+  const stoneRef = useRef(null);
 
   const width = window.innerWidth - 20; // 20px : for margin
   const tableSize = (width > 800) ? 800 : width;
@@ -51,16 +52,34 @@ const Board = () => {
 
   useEffect(() => {
     const drawing = drawingRef.current;
-    drawing.style = 'position: relative; width: ' + tableSize + 'px; height: ' + tableSize + 'px'
+    drawing.style = 'position: relative; width: ' + tableSize + 'px; height: ' + tableSize + 'px';
   }, []);
+
+  const moveBack = () => {
+    const history = play.stone.history;
+    if (history.length < 1) {
+      console.error('there is no stone.');
+      return;
+    }
+    
+    const lastStone = history[history.length - 1];
+    stoneRef.current.eraseStone(lastStone.row, lastStone.col);
+    console.info('#' + history.length + ' Retract ' + play.stone.color + ' (' + lastStone.row + ', ' + lastStone.col + ')');
+
+    play.stone.history.pop();
+    play.stone.color = (play.stone.color === 'black') ? 'white' : 'black';
+  }
 
   return (
     <React.Fragment>
       <div ref={drawingRef}>
         <Table play={play} />
-        <Stone play={play} option={option} />
+        <Stone play={play} option={option} ref={stoneRef} />
       </div>
-      <Option option={option} />
+      <div>
+        <button onClick={moveBack}>Move back</button>
+      </div>
+      <Option play={play} option={option} />
     </React.Fragment>
   );
 };

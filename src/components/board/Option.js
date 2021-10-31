@@ -4,10 +4,6 @@ const Option = ({ option }) => {
   
   const [colorMode, setColorMode] = useState('auto');
 
-  const moveBack = () => {
-    console.info('move back');
-  }
-
   const toggleStones = () => {
     console.info('toggle stones');
   }
@@ -26,7 +22,6 @@ const Option = ({ option }) => {
       <h3>Options</h3>
       <div>
         <h4>Events</h4>
-        <button onClick={moveBack}>Move back</button>
         <button onClick={toggleStones}>Hide stones</button>
         <button onClick={toggleText}>Show text</button>
       </div>

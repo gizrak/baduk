@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useImperativeHandle } from 'react';
 import styled from 'styled-components';
 
 const StyledCanvas = styled.canvas`
@@ -6,11 +6,12 @@ const StyledCanvas = styled.canvas`
   position:absolute;
 `;
 
-const Stone = ({ play, option }) => {
+const Stone = forwardRef(({ play, option }, stoneRef) => {
   const canvasRef = useRef(null);
 
   const gridCount = play.grid.count;
   const gridSize = play.grid.size;
+  const stoneColor = play.stone.color;
   const stoneSize = play.stone.size;
 
   useEffect(() => {
@@ -28,6 +29,41 @@ const Stone = ({ play, option }) => {
       }
     });
   }, []);
+
+  useImperativeHandle (stoneRef, () => ({
+    eraseStone (ix, iy) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+  
+      var putx = stoneSize * (iy + 1);
+      var puty = stoneSize * (ix + 1);
+      
+      if (ix < 0 || iy < 0 || ix >= gridCount || iy >= gridCount) {
+        throw 'Wrong cell position (' + ix + ', ' + iy + ')';
+      }
+  
+      // check whether if occupied position or not
+      if(play.stone.map[ix][iy] == 0) {
+        throw "Stone is not located in that position. (" + ix + ", " + iy + ")";
+      }
+      
+      // set sequence number on stone matrix
+      play.stone.map[ix][iy] = 0;  // 0 means no stone
+      
+      // erase stone and text
+      context.beginPath();
+      context.globalCompositeOperation = 'destination-out';
+      context.rect(putx - stoneSize / 2, puty - stoneSize / 2, stoneSize, stoneSize);
+      context.fillStyle = stoneColor;
+      context.fill();
+  
+      context.beginPath();
+      context.globalCompositeOperation = 'destination-out';
+      context.rect(putx - stoneSize / 2, puty - stoneSize / 2, stoneSize, stoneSize);
+      context.fillStyle = stoneColor;
+      context.fill();
+    }
+  }));
   
   const handleMouseEvent = (event, color) => {
     // get initial coord of canvas
@@ -136,6 +172,6 @@ const Stone = ({ play, option }) => {
   return (
     <StyledCanvas ref={canvasRef} />
   );
-};
+});
 
 export default Stone;
