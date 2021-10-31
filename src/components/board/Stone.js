@@ -6,7 +6,7 @@ const StyledCanvas = styled.canvas`
   position:absolute;
 `;
 
-const Stone = ({ tableSize, gridCount }) => {
+const Stone = ({ tableSize, gridCount, play, option }) => {
   const canvasRef = useRef(null);
 
   const stoneSize = tableSize / (gridCount + 1);
@@ -14,7 +14,6 @@ const Stone = ({ tableSize, gridCount }) => {
   const marginSize = stoneSize;
   console.log('stoneSize: ' + stoneSize + 'px, gridSize: ' + gridSize + 'px, marginSize: ' + marginSize + 'px');
 
-  var stoneColor = 'black';
   var stoneMap = ( function(parent) {
       var stones = [];
       for(var i = 0; i < gridCount; i++) {
@@ -25,7 +24,6 @@ const Stone = ({ tableSize, gridCount }) => {
       }
       return stones;
   }(this));
-  var stoneHistory = [];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,15 +31,17 @@ const Stone = ({ tableSize, gridCount }) => {
     canvas.height = tableSize;
 
     canvas.addEventListener('click', (event) => {
-      handle(event, stoneColor);
+      handleMouseEvent(event);
     });
     canvas.addEventListener('contextmenu', (event) => {
       event.preventDefault();
-      handle(event, 'black');
+      if (option.colorMode === 'mouse') {
+        handleMouseEvent(event, 'black');
+      }
     });
   }, []);
   
-  const handle = (event, color) => {
+  const handleMouseEvent = (event, color) => {
     // get initial coord of canvas
       var x = event.offsetX;
       var y = event.offsetY;
@@ -54,7 +54,7 @@ const Stone = ({ tableSize, gridCount }) => {
       var row = Math.floor(y / gridSize);
       var col = Math.floor(x / gridSize);
 
-      putStone(row, col, color);
+      putStone(row, col, color || decideColor());
   }
 
   const putStone = (row, col, color) => {
@@ -77,10 +77,24 @@ const Stone = ({ tableSize, gridCount }) => {
         return;
     }
 
-    stoneHistory.push({row: row, col: col, color: color});
-    console.log('#' + stoneHistory.length + ' Put ' + color + ' (' + row + ', ' + col + ')');
+    play.stone.history.push({row: row, col: col, color: color});
+    console.log('#' + play.stone.history.length + ' Put ' + color + ' (' + row + ', ' + col + ')');
+  }
 
-    stoneColor = (color === 'black') ? 'white' : 'black';
+  const decideColor = () => {
+    const mode = option.colorMode;
+    if (mode === 'mouse') {
+      return 'white';  // mouse mode left click
+    } else if (mode === 'black' || mode === 'white') {
+      return mode;
+    } else {
+      const history = play.stone.history;
+      if (history.length === 0) {
+        return 'black';
+      } else {
+        return history[history.length - 1].color === 'white' ? 'black' : 'white';
+      }
+    }
   }
 
   const drawStone = (context, ix, iy, color, sequence) => {
@@ -93,7 +107,7 @@ const Stone = ({ tableSize, gridCount }) => {
     }
 
     // set sequence number on stone matrix
-    stoneMap[ix][iy] = (stoneHistory.length+1);
+    stoneMap[ix][iy] = (play.stone.history.length+1);
 
     // draw stone shape and fill color
     context.beginPath();
