@@ -9,36 +9,44 @@ const Board = () => {
   const width = window.innerWidth - 20; // 20px : for margin
   const tableSize = (width > 800) ? 800 : width;
   const gridCount = 19;
+  const stoneSize = tableSize / (gridCount + 1);
+  const gridSize = stoneSize;
+  const marginSize = stoneSize;
   console.log('width: ' + width + 'px, tableSize: ' + tableSize + 'px, gridCount: ' + gridCount);
-
-  var stoneMap = ( function(parent) {
-      var stones = [];
-      for(var i = 0; i < gridCount; i++) {
-          stones[i] = [];
-          for(var j = 0; j < gridCount; j++) {
-              stones[i][j] = 0;
-          }
-      }
-      return stones;
-  }(this));
+  console.log('stoneSize: ' + stoneSize + 'px, gridSize: ' + gridSize + 'px, marginSize: ' + marginSize + 'px');
 
   const [play, setPlay] = useState({
-    game : {
-      boardsize : 19,
-      stonenumber : 1
+    table : {
+      size : tableSize
+    },
+    grid: {
+      count: gridCount,
+      size: gridSize,
+      margin: marginSize
     },
     stone : {
+      size: stoneSize,
       color: 'black',  // default first color
+      map: ( function(parent) {
+        var stones = [];
+        for(var i = 0; i < gridCount; i++) {
+            stones[i] = [];
+            for(var j = 0; j < gridCount; j++) {
+                stones[i][j] = 0;
+            }
+        }
+        return stones;
+      }(this)),
       history: []
     },
-    data : {},
-    visibility: {
-        stone : true,
-        text : false
-    }
+    data : {}
   });
   const [option, setOption] = useState({
-    colorMode: 'auto'
+    colorMode: 'auto',
+    visibility: {
+      stone : true,
+      text : false
+    }
   });
 
   useEffect(() => {
@@ -49,8 +57,8 @@ const Board = () => {
   return (
     <React.Fragment>
       <div ref={drawingRef}>
-        <Table size={tableSize} grid={gridCount} />
-        <Stone tableSize={tableSize} gridCount={gridCount} play={play} option={option} />
+        <Table play={play} />
+        <Stone play={play} option={option} />
       </div>
       <Option option={option} />
     </React.Fragment>

@@ -6,29 +6,17 @@ const StyledCanvas = styled.canvas`
   position:absolute;
 `;
 
-const Stone = ({ tableSize, gridCount, play, option }) => {
+const Stone = ({ play, option }) => {
   const canvasRef = useRef(null);
 
-  const stoneSize = tableSize / (gridCount + 1);
-  const gridSize = stoneSize;
-  const marginSize = stoneSize;
-  console.log('stoneSize: ' + stoneSize + 'px, gridSize: ' + gridSize + 'px, marginSize: ' + marginSize + 'px');
-
-  var stoneMap = ( function(parent) {
-      var stones = [];
-      for(var i = 0; i < gridCount; i++) {
-          stones[i] = [];
-          for(var j = 0; j < gridCount; j++) {
-              stones[i][j] = 0;
-          }
-      }
-      return stones;
-  }(this));
+  const gridCount = play.grid.count;
+  const gridSize = play.grid.size;
+  const stoneSize = play.stone.size;
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = tableSize;
-    canvas.height = tableSize;
+    canvas.width = play.table.size;
+    canvas.height = play.table.size;
 
     canvas.addEventListener('click', (event) => {
       handleMouseEvent(event);
@@ -66,7 +54,7 @@ const Stone = ({ tableSize, gridCount, play, option }) => {
     }
 
     // check whether if occupied position or not
-    if (stoneMap[row][col] !== 0) {
+    if (play.stone.map[row][col] !== 0) {
         throw "Stone is already occupied by other stone. (" + row + ", " + col + ")";
     }
 
@@ -107,7 +95,7 @@ const Stone = ({ tableSize, gridCount, play, option }) => {
     }
 
     // set sequence number on stone matrix
-    stoneMap[ix][iy] = (play.stone.history.length+1);
+    play.stone.map[ix][iy] = (play.stone.history.length+1);
 
     // draw stone shape and fill color
     context.beginPath();
@@ -131,7 +119,7 @@ const Stone = ({ tableSize, gridCount, play, option }) => {
     // fill sequence text
     // this.gridtextContext.globalCompositeOperation = 'source-over';
     // this.gridtextContext.strokeStyle = (color == 'black') ? 'white' : 'black';
-    // this.gridtextContext.font = 'italic bold ' + (this.stoneSize / 2.5) + 'px sans-serif';
+    // this.gridtextContext.font = 'italic bold ' + (stoneSize / 2.5) + 'px sans-serif';
     // this.gridtextContext.textBaseline = 'bottom';
     // var seq = (typeof(sequence) !== 'undefined') ? sequence : this.stoneHistory.length + 1;
     // var adjustment = 2.2;
@@ -142,7 +130,7 @@ const Stone = ({ tableSize, gridCount, play, option }) => {
     // } else {
     //     adjustment = 2.2;
     // }
-    // this.gridtextContext.strokeText(seq, putx - (this.stoneSize / adjustment), puty + (this.stoneSize / 3.5));
+    // this.gridtextContext.strokeText(seq, putx - (stoneSize / adjustment), puty + (stoneSize / 3.5));
   }
   
   return (
