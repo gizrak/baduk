@@ -6,44 +6,44 @@ const StyledCanvas = styled.canvas`
   position:absolute;
 `;
 
-const Table = ({ size, grid }) => {
+const Table = ({ play }) => {
   const canvasRef = useRef(null);
 
-  const stoneSize = size / (grid + 1);
-  const gridSize = stoneSize;
-  const marginSize = stoneSize;
-  console.log('stoneSize: ' + stoneSize + 'px, gridSize: ' + gridSize + 'px, marginSize: ' + marginSize + 'px');
+  const tableSize = play.table.size;
+  const gridCount = play.grid.count;
+  const gridSize = play.grid.size;
+  const gridMargin = play.grid.margin;
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = tableSize;
+    canvas.height = tableSize;
 
     const context = canvas.getContext('2d');
-    drawLines(context, grid, gridSize, marginSize);
-    drawPattern(context, size, marginSize);
-    drawGuidelineText(context, grid, gridSize, marginSize);
-    drawDots(context, grid, gridSize);
+    drawLines(context);
+    drawPattern(context);
+    drawGuidelineText(context);
+    drawDots(context);
   }, []);
 
-  const drawLines = (context, grid, gridSize, marginSize) => {
-    const drawSize = grid * gridSize;
-    const xStart = marginSize;
-    const yStart = marginSize;
+  const drawLines = (context) => {
+    const drawSize = gridCount * gridSize;
+    const xStart = gridMargin;
+    const yStart = gridMargin;
     const xEnd = xStart + drawSize;
     const yEnd = yStart + drawSize;
 
     // Draw the board x lines
     context.beginPath();
-    for(var x = xStart; x <= xEnd - marginSize; x += gridSize) {
+    for(var x = xStart; x <= xEnd - gridMargin; x += gridSize) {
       context.moveTo(x, yStart);
-      context.lineTo(x, yEnd - marginSize);
+      context.lineTo(x, yEnd - gridMargin);
     }
 
     // Draw the board y lines
-    for(var y = yStart; y <= yEnd - marginSize; y += gridSize) {
+    for(var y = yStart; y <= yEnd - gridMargin; y += gridSize) {
       context.moveTo(xStart, y);
-      context.lineTo(xEnd - marginSize, y);
+      context.lineTo(xEnd - gridMargin, y);
     }
 
     context.strokeStyle = 'black';
@@ -51,7 +51,7 @@ const Table = ({ size, grid }) => {
     context.closePath();
   }
 
-  const drawPattern = (context, size, marginSize) => {
+  const drawPattern = (context) => {
     // Create new image object to use as pattern
     const img = new Image();
     img.src = require('../../img/pvc_wood_pattern_sheet.jpg');
@@ -60,30 +60,30 @@ const Table = ({ size, grid }) => {
         context.fillStyle = boardBG;
         context.globalAlpha = 0.7;
         context.globalCompositeOperation = 'destination-over';
-        context.fillRect(0, 0, size + marginSize * 2, size + marginSize * 2);
+        context.fillRect(0, 0, tableSize + gridMargin * 2, tableSize + gridMargin * 2);
     };
   }
 
-  const drawGuidelineText = (context, grid, gridSize, marginSize) => {
+  const drawGuidelineText = (context) => {
     context.font = "20px";
     context.textBaseline = "bottom";
 
-    const drawSize = grid * gridSize;
+    const drawSize = gridCount * gridSize;
     var textX = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'];
     var textY = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'];
 
-    for(var i = 0; i < grid; i++) {
-      context.fillText(textX[i], gridSize * (i + 1) - 5, marginSize / 2 + 5);
-      context.fillText(textX[i], gridSize * (i + 1) - 5, drawSize + marginSize - (marginSize / 2) + 5);
+    for(var i = 0; i < gridCount; i++) {
+      context.fillText(textX[i], gridSize * (i + 1) - 5, gridMargin / 2 + 5);
+      context.fillText(textX[i], gridSize * (i + 1) - 5, drawSize + gridMargin - (gridMargin / 2) + 5);
 
-      context.fillText(textY[i], marginSize / 2 - 5, gridSize * (i + 1) + 5);
-      context.fillText(textY[i], drawSize + marginSize - (marginSize / 2) - 5, gridSize * (i + 1) + 5);
+      context.fillText(textY[i], gridMargin / 2 - 5, gridSize * (i + 1) + 5);
+      context.fillText(textY[i], drawSize + gridMargin - (gridMargin / 2) - 5, gridSize * (i + 1) + 5);
     }
   }
 
-  const drawDots = (context, grid, gridSize) => {
+  const drawDots = (context) => {
     var point = [];
-    if (grid === 19) {
+    if (gridCount === 19) {
       point = [[4, 4], [10, 4], [16, 4], [4, 10], [10, 10], [16, 10], [4, 16], [10, 16], [16, 16]];
     }
 

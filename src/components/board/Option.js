@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const Option = () => {
-
-  const moveBack = () => {
-    console.info('move back');
-  }
+const Option = ({ option }) => {
+  
+  const [colorMode, setColorMode] = useState('auto');
 
   const toggleStones = () => {
     console.info('toggle stones');
@@ -14,32 +12,28 @@ const Option = () => {
     console.info('toggle text');
   }
 
-  const toggleNumbers = () => {
-    console.info('toggle numbers');
-  }
-
-  const handleChange = (e) => {
-    console.info(e.target.value);
+  const handleColorModeChange = (event) => {
+    setColorMode(event.target.value);
+    option.colorMode = event.target.value;
   }
 
   return (
     <React.Fragment>
+      <h3>Options</h3>
       <div>
-        <h3>Options</h3>
         <h4>Events</h4>
-        <button onClick={moveBack}>Move back</button>
         <button onClick={toggleStones}>Hide stones</button>
         <button onClick={toggleText}>Show text</button>
       </div>
       <div>
         <h4>Stone Color</h4>
-        <input type="radio" id="radio_auto" name="stoneColor" value="auto" onChange={handleChange} />
+        <input type="radio" id="radio_auto" name="colorMode" value="auto" checked={colorMode === 'auto' ? true : false} onChange={handleColorModeChange} />
         <label htmlFor="radio_auto">Auto</label>
-        <input type="radio" id="radio_black" name="stoneColor" value="black" onChange={handleChange} />
+        <input type="radio" id="radio_black" name="colorMode" value="black" checked={colorMode === 'black' ? true : false} onChange={handleColorModeChange} />
         <label htmlFor="radio_black">Black</label>
-        <input type="radio" id="radio_white" name="stoneColor" value="white" onChange={handleChange} />
+        <input type="radio" id="radio_white" name="colorMode" value="white" checked={colorMode === 'white' ? true : false} onChange={handleColorModeChange} />
         <label htmlFor="radio_white">White</label>
-        <input type="radio" id="radio_mouse" name="stoneColor" value="mouse" onChange={handleChange} />
+        <input type="radio" id="radio_mouse" name="colorMode" value="mouse" checked={colorMode === 'mouse' ? true : false} onChange={handleColorModeChange} />
         <label htmlFor="radio_mouse">Mouse</label>
       </div>
     </React.Fragment>

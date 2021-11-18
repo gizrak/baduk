@@ -1,7 +1,7 @@
 import React from 'react';
-import Board from '../components/Board';
+import Board from '../components/board';
 
-const Home = () => {
+const BoardPage = () => {
   return (
     <React.Fragment>
       <Board />
@@ -9,4 +9,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default BoardPage;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useImperativeHandle } from 'react';
 import styled from 'styled-components';
 
 const StyledCanvas = styled.canvas`
@@ -6,42 +6,66 @@ const StyledCanvas = styled.canvas`
   position:absolute;
 `;
 
-const Stone = ({ tableSize, gridCount }) => {
+const Stone = forwardRef(({ play, option }, stoneRef) => {
   const canvasRef = useRef(null);
 
-  const stoneSize = tableSize / (gridCount + 1);
-  const gridSize = stoneSize;
-  const marginSize = stoneSize;
-  console.log('stoneSize: ' + stoneSize + 'px, gridSize: ' + gridSize + 'px, marginSize: ' + marginSize + 'px');
-
-  var stoneColor = 'black';
-  var stoneMap = ( function(parent) {
-      var stones = [];
-      for(var i = 0; i < gridCount; i++) {
-          stones[i] = [];
-          for(var j = 0; j < gridCount; j++) {
-              stones[i][j] = 0;
-          }
-      }
-      return stones;
-  }(this));
-  var stoneHistory = [];
+  const gridCount = play.grid.count;
+  const gridSize = play.grid.size;
+  const stoneColor = play.stone.color;
+  const stoneSize = play.stone.size;
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = tableSize;
-    canvas.height = tableSize;
+    canvas.width = play.table.size;
+    canvas.height = play.table.size;
 
     canvas.addEventListener('click', (event) => {
-      handle(event, stoneColor);
+      handleMouseEvent(event);
     });
     canvas.addEventListener('contextmenu', (event) => {
       event.preventDefault();
-      handle(event, 'black');
+      if (option.colorMode === 'mouse') {
+        handleMouseEvent(event, 'black');
+      }
     });
   }, []);
+
+  useImperativeHandle (stoneRef, () => ({
+    eraseStone (ix, iy) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
   
-  const handle = (event, color) => {
+      var putx = stoneSize * (iy + 1);
+      var puty = stoneSize * (ix + 1);
+      
+      if (ix < 0 || iy < 0 || ix >= gridCount || iy >= gridCount) {
+        throw 'Wrong cell position (' + ix + ', ' + iy + ')';
+      }
+  
+      // check whether if occupied position or not
+      if(play.stone.map[ix][iy] == 0) {
+        throw "Stone is not located in that position. (" + ix + ", " + iy + ")";
+      }
+      
+      // set sequence number on stone matrix
+      play.stone.map[ix][iy] = 0;  // 0 means no stone
+      
+      // erase stone and text
+      context.beginPath();
+      context.globalCompositeOperation = 'destination-out';
+      context.rect(putx - stoneSize / 2, puty - stoneSize / 2, stoneSize, stoneSize);
+      context.fillStyle = stoneColor;
+      context.fill();
+  
+      context.beginPath();
+      context.globalCompositeOperation = 'destination-out';
+      context.rect(putx - stoneSize / 2, puty - stoneSize / 2, stoneSize, stoneSize);
+      context.fillStyle = stoneColor;
+      context.fill();
+    }
+  }));
+  
+  const handleMouseEvent = (event, color) => {
     // get initial coord of canvas
       var x = event.offsetX;
       var y = event.offsetY;
@@ -54,7 +78,7 @@ const Stone = ({ tableSize, gridCount }) => {
       var row = Math.floor(y / gridSize);
       var col = Math.floor(x / gridSize);
 
-      putStone(row, col, color);
+      putStone(row, col, color || decideColor());
   }
 
   const putStone = (row, col, color) => {
@@ -66,7 +90,7 @@ const Stone = ({ tableSize, gridCount }) => {
     }
 
     // check whether if occupied position or not
-    if (stoneMap[row][col] !== 0) {
+    if (play.stone.map[row][col] !== 0) {
         throw "Stone is already occupied by other stone. (" + row + ", " + col + ")";
     }
 
@@ -77,10 +101,24 @@ const Stone = ({ tableSize, gridCount }) => {
         return;
     }
 
-    stoneHistory.push({row: row, col: col, color: color});
-    console.log('#' + stoneHistory.length + ' Put ' + color + ' (' + row + ', ' + col + ')');
+    play.stone.history.push({row: row, col: col, color: color});
+    console.log('#' + play.stone.history.length + ' Put ' + color + ' (' + row + ', ' + col + ')');
+  }
 
-    stoneColor = (color === 'black') ? 'white' : 'black';
+  const decideColor = () => {
+    const mode = option.colorMode;
+    if (mode === 'mouse') {
+      return 'white';  // mouse mode left click
+    } else if (mode === 'black' || mode === 'white') {
+      return mode;
+    } else {
+      const history = play.stone.history;
+      if (history.length === 0) {
+        return 'black';
+      } else {
+        return history[history.length - 1].color === 'white' ? 'black' : 'white';
+      }
+    }
   }
 
   const drawStone = (context, ix, iy, color, sequence) => {
@@ -93,7 +131,7 @@ const Stone = ({ tableSize, gridCount }) => {
     }
 
     // set sequence number on stone matrix
-    stoneMap[ix][iy] = (stoneHistory.length+1);
+    play.stone.map[ix][iy] = (play.stone.history.length+1);
 
     // draw stone shape and fill color
     context.beginPath();
@@ -117,7 +155,7 @@ const Stone = ({ tableSize, gridCount }) => {
     // fill sequence text
     // this.gridtextContext.globalCompositeOperation = 'source-over';
     // this.gridtextContext.strokeStyle = (color == 'black') ? 'white' : 'black';
-    // this.gridtextContext.font = 'italic bold ' + (this.stoneSize / 2.5) + 'px sans-serif';
+    // this.gridtextContext.font = 'italic bold ' + (stoneSize / 2.5) + 'px sans-serif';
     // this.gridtextContext.textBaseline = 'bottom';
     // var seq = (typeof(sequence) !== 'undefined') ? sequence : this.stoneHistory.length + 1;
     // var adjustment = 2.2;
@@ -128,12 +166,12 @@ const Stone = ({ tableSize, gridCount }) => {
     // } else {
     //     adjustment = 2.2;
     // }
-    // this.gridtextContext.strokeText(seq, putx - (this.stoneSize / adjustment), puty + (this.stoneSize / 3.5));
+    // this.gridtextContext.strokeText(seq, putx - (stoneSize / adjustment), puty + (stoneSize / 3.5));
   }
   
   return (
     <StyledCanvas ref={canvasRef} />
   );
-};
+});
 
 export default Stone;

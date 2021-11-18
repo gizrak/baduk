@@ -52,7 +52,7 @@ const Navigation = () => {
             <span aria-hidden="true" role="img">
               🏠
             </span>
-            Home
+            Board
           </Link>
         </li>
         <li>

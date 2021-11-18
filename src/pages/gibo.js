@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const Gibo = () => {
+const GiboPage = () => {
   useEffect(() => {
     // update the document title
     document.title = 'Gibo — Baduk';
@@ -13,4 +13,4 @@ const Gibo = () => {
   );
 };
 
-export default Gibo;
+export default GiboPage;
