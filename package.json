@@ -16,6 +16,7 @@
     "graphql": "^14.5.8",
     "img": "^3.0.3",
     "normalize.css": "8.0.1",
+    "parcel": "^2.0.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-markdown": "4.2.2",
